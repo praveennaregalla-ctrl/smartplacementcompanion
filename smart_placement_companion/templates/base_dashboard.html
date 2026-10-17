@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %} | Smart Placement Companion</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --sidebar-collapsed: 70px;
+            --primary-color: #0f3b57;
+            --secondary-color: #ff6b3d;
+            --sidebar-bg: #1a2332;
+            --sidebar-hover: #252f3f;
+            --content-bg: #f5f7fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--content-bg);
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .sidebar-brand {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-brand a {
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .sidebar-brand i {
+            color: var(--secondary-color);
+            font-size: 28px;
+        }
+        
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+        
+        .nav-section {
+            padding: 0 25px 10px;
+            color: rgba(255,255,255,0.4);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-item {
+            margin: 2px 0;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 25px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--sidebar-hover);
+            color: white;
+            border-left-color: var(--secondary-color);
+        }
+        
+        .nav-link i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+        
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .search-box {
+            position: relative;
+            width: 350px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background: white;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nav-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: #f8f9fa;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .nav-icon-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        .badge-notification {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            background: #dc3545;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .user-profile:hover {
+            background: #f8f9fa;
+        }
+        
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            line-height: 1.3;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        /* Content Area */
+        .content-area {
+            padding: 30px;
+        }
+        
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            color: #888;
+            font-size: 15px;
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-icon.blue {
+            background: rgba(15, 59, 87, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .stat-icon.orange {
+            background: rgba(255, 107, 61, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .stat-icon.green {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        .stat-icon.red {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .table-card-header {
+            padding: 25px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .table-card-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+        
+        .btn-primary-custom {
+            padding: 10px 20px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #e65a2e;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 61, 0.3);
+        }
+        
+        /* Custom Table */
+        .custom-table {
+            width: 100%;
+            margin: 0;
+        }
+        
+        .custom-table thead th {
+            background: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .custom-table tbody td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f5f5f5;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+        
+        .custom-table tbody tr:hover {
+            background: rgba(255, 107, 61, 0.02);
+        }
+        
+        .custom-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Action Buttons */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0 3px;
+        }
+        
+        .btn-action.edit {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .btn-action.edit:hover {
+            background: #ffc107;
+            color: white;
+        }
+        
+        .btn-action.delete {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .btn-action.delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-action.view {
+            background: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+        
+        .btn-action.view:hover {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        /* Badges */
+        .badge-custom {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-custom.primary {
+            background: rgba(15, 59, 87, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .badge-custom.success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        .badge-custom.warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+        }
+        
+        .badge-custom.danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-wrapper {
+                margin-left: 0;
+            }
+            
+            .search-box {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 20px;
+            }
+            
+            .search-box {
+                display: none;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <a href="{% url 'dashboard' %}">
+                <i class="bi bi-mortarboard-fill"></i>
+                <span>SPC Admin</span>
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">Main Menu</div>
+            
+            <div class="nav-item">
+                <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="{% url 'dashboard_students' %}" class="nav-link {% if '/dashboard/students/' in request.path %}active{% endif %}">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Students</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="{% url 'students' %}" class="nav-link {% if '/students/' in request.path and request.path != '/students/' %}active{% endif %}">
+                    <i class="bi bi-person-badge-fill"></i>
+                    <span>Student Dashboard</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="{% url 'dashboard_companies' %}" class="nav-link {% if '/dashboard/companies/' in request.path %}active{% endif %}">
+                    <i class="bi bi-building-fill"></i>
+                    <span>Companies</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="{% url 'dashboard_placements' %}" class="nav-link {% if '/dashboard/placements/' in request.path %}active{% endif %}">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <span>Placements</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="{% url 'interview:interview_preparation' %}" class="nav-link {% if '/interview/preparation/' in request.path or '/interview/mock/' in request.path %}active{% endif %}">
+                    <i class="bi bi-mic-fill"></i>
+                    <span>Voice Mock Interview</span>
+                </a>
+            </div>
+
+            <div class="nav-item">
+                <a href="{% url 'interview:practice_session' %}" class="nav-link {% if '/interview/practice-session/' in request.path or '/interview/practice/' in request.path %}active{% endif %}">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Aptitude Practice</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">Analytics</div>
+            
+            <div class="nav-item">
+                <a href="{% url 'dashboard_analytics' %}" class="nav-link {% if '/dashboard/analytics/' in request.path %}active{% endif %}">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Analytics</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">System</div>
+            
+            <div class="nav-item">
+                <a href="{% url 'home' %}" class="nav-link">
+                    <i class="bi bi-house-fill"></i>
+                    <span>Back to Site</span>
+                </a>
+            </div>
+            
+            <div class="nav-item">
+                <a href="{% url 'admin:index' %}" class="nav-link">
+                    <i class="bi bi-shield-fill"></i>
+                    <span>Django Admin</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+    
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Navbar -->
+        <header class="top-navbar">
+            <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            
+            <div class="navbar-right">
+                <button class="nav-icon-btn">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="badge-notification">3</span>
+                </button>
+                
+                <button class="nav-icon-btn">
+                    <i class="bi bi-envelope-fill"></i>
+                </button>
+                
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="user-info d-none d-md-block">
+                        <div class="user-name">Admin</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                    <i class="bi bi-chevron-down d-none d-md-block" style="color: #888;"></i>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Content Area -->
+        <main class="content-area">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,173 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Analysis Results - Smart Placement Assistant{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-4">
+    <div class="row g-4" data-aos="fade-up">
+        <!-- Score Visualization Column -->
+        <div class="col-lg-4">
+            <div class="glass-section h-100 p-5 text-center bg-white border-0 shadow-lg rounded-4">
+                <h5 class="fw-black text-navy mb-4 text-uppercase" style="letter-spacing: 1px;">Overall Match</h5>
+                
+                <div class="score-circle-container position-relative d-inline-block mb-4">
+                    <svg viewBox="0 0 100 100" style="width: 180px; height: 180px;">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f1f1" stroke-width="8"></circle>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="{% if analysis.score >= 80 %}#198754{% elif analysis.score >= 60 %}#ffc107{% else %}#dc3545{% endif %}" 
+                                stroke-width="8" stroke-dasharray="{{ analysis.score|add:0 }}, 100" 
+                                transform="rotate(-90 50 50)" stroke-linecap="round" pathLength="100"></circle>
+                    </svg>
+                    <div class="score-text position-absolute top-50 start-50 translate-middle">
+                        <span class="display-4 fw-black text-navy">{{ analysis.score }}</span>
+                        <span class="text-muted small">/100</span>
+                    </div>
+                </div>
+
+                <div class="status-badge mb-4">
+                    {% if analysis.score >= 80 %}
+                        <span class="badge bg-success-subtle text-success px-4 py-2 rounded-pill fw-bold border border-success">
+                            <i class="bi bi-patch-check-fill me-2"></i> Industry Ready
+                        </span>
+                    {% elif analysis.score >= 60 %}
+                        <span class="badge bg-warning-subtle text-warning px-4 py-2 rounded-pill fw-bold border border-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> Needs Polish
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger-subtle text-danger px-4 py-2 rounded-pill fw-bold border border-danger">
+                            <i class="bi bi-x-circle-fill me-2"></i> Low Match
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="row g-3 mb-3 px-3">
+                    <div class="col-6">
+                        <div class="p-3 rounded-4 bg-light border">
+                            <div class="small text-uppercase text-muted mb-2">ATS Score</div>
+                            <div class="h4 fw-black mb-0">{{ analysis.ats_score|default:results.ats_score|default:0 }}%</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded-4 bg-light border">
+                            <div class="small text-uppercase text-muted mb-2">Grammar Score</div>
+                            <div class="h4 fw-black mb-0">{{ analysis.grammar_score|default:results.grammar_score|default:0 }}%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-muted small px-3">
+                    Your resume has been analyzed against <strong>{{ results.matched|length|add:results.missing|length }}</strong> relevant industry keywords.
+                </p>
+
+                {% if analysis.resume_sections or results.resume_sections %}
+                <div class="text-muted small px-3 mb-3">
+                    Detected Sections: <strong>{{ analysis.resume_sections|default:results.resume_sections }}</strong>
+                </div>
+                {% endif %}
+                
+                <hr class="my-4 opacity-10">
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'resume:analyze_resume' %}" class="btn btn-navy py-2 fw-bold rounded-3">NEW ANALYSIS</a>
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary py-2 fw-bold rounded-3">DASHBOARD</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Feedback Column -->
+        <div class="col-lg-8">
+            <div class="glass-section h-100 p-0 overflow-hidden bg-white border-0 shadow-lg rounded-4">
+                <div class="p-4 bg-light border-bottom">
+                    <h5 class="fw-black text-navy mb-0" style="font-weight: 900;"><i class="bi bi-clipboard-data-fill text-gold me-2"></i> Deep Insight Report</h5>
+                </div>
+                
+                <div class="p-4">
+                    <!-- Skills Breakdown -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 bg-success-subtle h-100 border border-success-subtle">
+                                <h6 class="fw-bold text-success mb-3"><i class="bi bi-check-circle-fill me-2"></i> Matched Strengths</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for skill in results.matched %}
+                                        <span class="badge bg-white text-success shadow-sm border-0 px-3 py-2 rounded-3">{{ skill }}</span>
+                                    {% empty %}
+                                        <span class="text-muted small italic">No core technical matches found.</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-4 bg-danger-subtle h-100 border border-danger-subtle">
+                                <h6 class="fw-bold text-danger mb-3"><i class="bi bi-dash-circle-fill me-2"></i> Critical Gaps</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for skill in results.missing|slice:":8" %}
+                                        <span class="badge bg-white text-danger shadow-sm border-0 px-3 py-2 rounded-3">{{ skill }}</span>
+                                    {% empty %}
+                                        <span class="text-success small fw-bold">No critical gaps identified!</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Improvement Roadmap -->
+                    <div class="roadmap-section p-4 rounded-4 border bg-white shadow-sm mb-4">
+                        <h6 class="fw-bold text-navy mb-4"><i class="bi bi-map-fill text-gold me-2"></i> Suggested Improvement Path</h6>
+                        <div class="roadmap-timeline">
+                            {% for suggestion in results.suggestions %}
+                            <div class="roadmap-item d-flex mb-3 align-items-start">
+                                <div class="roadmap-icon me-3 bg-navy text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; flex-shrink: 0;">
+                                    {{ forloop.counter }}
+                                </div>
+                                <div class="roadmap-content bg-light p-3 rounded-3 w-100 border-start border-4 border-navy">
+                                    <p class="small mb-0 fw-medium text-navy">{{ suggestion }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {% if results.entities %}
+                    <div class="nlp-extraction p-4 rounded-4 border bg-light">
+                        <h6 class="fw-bold text-navy mb-3 small text-uppercase" style="letter-spacing: 1px;">AI Entity Detection (Organizations & Projects)</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for ent in results.entities %}
+                                <span class="badge bg-white border text-muted px-3 py-2 rounded-pill shadow-sm">{{ ent }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .btn-navy:hover { background-color: #0c1a4d !important; transform: translateY(-2px); }
+    .text-gold { color: var(--rv-gold) !important; }
+    .fw-black { font-weight: 900 !important; }
+    .bg-success-subtle { background-color: rgba(25, 135, 84, 0.05) !important; }
+    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.05) !important; }
+    .bg-warning-subtle { background-color: rgba(255, 193, 7, 0.05) !important; }
+    .border-navy { border-color: var(--rv-navy) !important; }
+
+    .score-circle-container {
+        filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));
+    }
+    
+    .roadmap-timeline {
+        position: relative;
+    }
+</style>
+
+<style>
+    .text-navy { color: var(--rv-navy); }
+    .btn-navy { background-color: var(--rv-navy); color: white; }
+    .btn-navy:hover { background-color: var(--rv-dark-navy); color: #CBA35C; }
+    .btn-outline-navy { border-color: var(--rv-navy); color: var(--rv-navy); }
+    .btn-outline-navy:hover { background-color: var(--rv-navy); color: white; }
+</style>
+{% endblock %}

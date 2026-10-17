@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+
+{% block title %}My Applications - Placement Management System{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="fw-bold" style="color: var(--rv-navy);">My Applications</h1>
+            <p class="text-muted">Track the status of your placement applications.</p>
+        </div>
+        <a href="{% url 'company_list' %}" class="btn btn-navy">
+            <i class="bi bi-plus-lg me-2"></i> Browse Companies
+        </a>
+    </div>
+</div>
+
+<div class="glass-section">
+    {% if applications %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th style="border-top-left-radius: 8px;">Company</th>
+                    <th>Role</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                    <th style="border-top-right-radius: 8px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="company-logo-mini me-3">
+                                {{ app.company.name|first }}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ app.company.name }}</h6>
+                                <small class="text-muted">{{ app.company.location }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="fw-medium">{{ app.company.role }}</span>
+                        <div class="small text-success">₹{{ app.company.package }} LPA</div>
+                    </td>
+                    <td>
+                        <div class="small fw-bold">{{ app.created_at|date:"M d, Y" }}</div>
+                        <div class="small text-muted">{{ app.created_at|time:"h:i A" }}</div>
+                    </td>
+                    <td>
+                        {% if app.status == 'SELECTED' %}
+                            <span class="badge rounded-pill bg-success px-3 py-2">
+                                <i class="bi bi-check-circle-fill me-1"></i> Selected
+                            </span>
+                        {% elif app.status == 'REJECTED' %}
+                            <span class="badge rounded-pill bg-danger px-3 py-2">
+                                <i class="bi bi-x-circle-fill me-1"></i> Rejected
+                            </span>
+                        {% elif app.status == 'SHORTLISTED' %}
+                            <span class="badge rounded-pill bg-info text-dark px-3 py-2">
+                                <i class="bi bi-star-fill me-1"></i> Shortlisted
+                            </span>
+                        {% elif app.status == 'APPLIED' or app.status == 'PENDING' %}
+                            <span class="badge rounded-pill bg-warning text-dark px-3 py-2">
+                                <i class="bi bi-clock-fill me-1"></i> {{ app.status|capfirst }}
+                            </span>
+                        {% else %}
+                            <span class="badge rounded-pill bg-secondary px-3 py-2">
+                                {{ app.status|capfirst }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'company_detail' app.company.id %}" class="btn btn-sm btn-outline-navy">
+                            <i class="bi bi-eye-fill"></i> View Details
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="bi bi-clipboard-x text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h4>No Applications Found</h4>
+        <p class="text-muted mb-4">You haven't applied to any companies yet. Start your journey today!</p>
+        <a href="{% url 'company_list' %}" class="btn btn-navy px-4 py-2">
+            Explore Opportunities
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .btn-navy { background-color: var(--rv-navy); color: white; border: 1px solid var(--rv-navy); }
+    .btn-navy:hover { background-color: var(--rv-dark-navy); color: var(--rv-gold); }
+    .btn-outline-navy { color: var(--rv-navy); border: 1px solid var(--rv-navy); }
+    .btn-outline-navy:hover { background-color: var(--rv-navy); color: white; }
+    
+    .company-logo-mini {
+        width: 40px;
+        height: 40px;
+        background-color: var(--rv-gold);
+        color: var(--rv-navy);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font-weight: 900;
+        font-size: 1.2rem;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(203, 163, 92, 0.05);
+    }
+    
+    .badge {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+    }
+</style>
+{% endblock %}

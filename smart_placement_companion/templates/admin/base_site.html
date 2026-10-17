@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<a href="{% url 'admin:index' %}" class="navbar-brand">
+    <span class="brand-text font-weight-light">{{ site_header|default:_('Django administration') }}</span>
+</a>
+{% endblock %}
+
+{% block nav-global %}
+<!-- Home Button in Admin Header -->
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="/" class="nav-link" style="background-color: #ff6b3d; color: white; border-radius: 4px; padding: 8px 16px; margin-right: 10px; font-weight: 500;">
+        <i class="fas fa-home mr-2"></i> Home
+    </a>
+</li>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Home Button Styling */
+    .nav-link[href="/"] {
+        background-color: #ff6b3d !important;
+        color: white !important;
+        border-radius: 4px !important;
+        padding: 8px 16px !important;
+        margin-right: 10px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .nav-link[href="/"]:hover {
+        background-color: #e65a2e !important;
+        color: white !important;
+        text-decoration: none !important;
+    }
+    
+    .nav-link[href="/"] i {
+        margin-right: 5px;
+    }
+</style>
+{% endblock %}

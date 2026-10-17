@@ -1,0 +1,333 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ student.name }} - Student Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        height: 100%;
+    }
+    .dashboard-card h4 {
+        color: #003366;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    .dashboard-pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef6ff;
+        color: #0f3b57;
+        font-size: 12px;
+        font-weight: 600;
+        margin: 4px 6px 4px 0;
+    }
+    .dashboard-list li {
+        margin-bottom: 8px;
+        color: #4b5563;
+    }
+    .application-card {
+        background: #f8fafc;
+        border: 1px solid #e0e7ff;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }
+    .application-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-color: #c7d2fe;
+    }
+    .application-card.applied { border-left: 4px solid #3b82f6; }
+    .application-card.shortlisted { border-left: 4px solid #f59e0b; }
+    .application-card.selected { border-left: 4px solid #10b981; }
+    .application-card.rejected { border-left: 4px solid #ef4444; }
+    .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .status-applied { background: #dbeafe; color: #1e40af; }
+    .status-shortlisted { background: #fef3c7; color: #92400e; }
+    .status-selected { background: #dcfce7; color: #166534; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    .status-pending { background: #f3f4f6; color: #374151; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Student Dashboard</h1>
+    <p>Track resumes, skills, opportunities, and placement progress in one place.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-person-badge"></i> Profile Overview</h4>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <p class="mb-1 text-muted">Name</p>
+                    <h5 class="fw-bold">{{ student.name }}</h5>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-muted">Branch</p>
+                    <h5 class="fw-bold">{{ student.branch }}</h5>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-muted">CGPA</p>
+                    <h5 class="fw-bold">{{ student.cgpa }}</h5>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-muted">Readiness Score</p>
+                    <h5 class="fw-bold">{{ student.overall_readiness_score }}%</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-graph-up-arrow"></i> Quick Summary</h4>
+            <ul class="list-unstyled dashboard-list">
+                <li><strong>Resume:</strong> {% if student.resume %}Uploaded{% else %}Pending{% endif %}</li>
+                <li><strong>Skills:</strong> {{ student.skills_list|length|default:0 }}</li>
+                <li><strong>Placements:</strong> {{ placements|length }}</li>
+                <li><strong>Companies:</strong> {{ upcoming_companies|length }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- MY APPLICATIONS SECTION -->
+<div class="row g-4 mt-2">
+    <div class="col-lg-12">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-briefcase-fill"></i> My Applications & Tracking</h4>
+            {% if placements %}
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 12px; background: #dbeafe; border-radius: 10px;">
+                            <h6 style="color: #1e40af; margin: 0; font-weight: 600;">
+                                {{ placements|length }}
+                            </h6>
+                            <small style="color: #1e40af;">Total Applications</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 12px; background: #fef3c7; border-radius: 10px;">
+                            <h6 style="color: #92400e; margin: 0; font-weight: 600;">
+                                {% regroup placements by status as status_groups %}
+                                {% for status, items in status_groups %}
+                                    {% if status == 'SHORTLISTED' %}{{ items|length }}{% endif %}
+                                {% endfor %}
+                            </h6>
+                            <small style="color: #92400e;">Shortlisted</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 12px; background: #dcfce7; border-radius: 10px;">
+                            <h6 style="color: #166534; margin: 0; font-weight: 600;">
+                                {% for status, items in status_groups %}
+                                    {% if status == 'SELECTED' %}{{ items|length }}{% endif %}
+                                {% endfor %}
+                            </h6>
+                            <small style="color: #166534;">Selected</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center; padding: 12px; background: #fee2e2; border-radius: 10px;">
+                            <h6 style="color: #991b1b; margin: 0; font-weight: 600;">
+                                {% for status, items in status_groups %}
+                                    {% if status == 'REJECTED' %}{{ items|length }}{% endif %}
+                                {% endfor %}
+                            </h6>
+                            <small style="color: #991b1b;">Rejected</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="max-height: 500px; overflow-y: auto;">
+                    {% for placement in placements %}
+                        <div class="application-card {% if placement.status == 'APPLIED' %}applied{% elif placement.status == 'SHORTLISTED' %}shortlisted{% elif placement.status == 'SELECTED' %}selected{% elif placement.status == 'REJECTED' %}rejected{% endif %}">
+                            <div style="display: flex; justify-content: space-between; align-items: start; gap: 16px;">
+                                <div style="flex: 1;">
+                                    <h6 style="margin: 0 0 8px 0; font-weight: 600; color: #1f2937;">{{ placement.company.name }}</h6>
+                                    <p style="margin: 4px 0; font-size: 14px; color: #6b7280;">
+                                        <i class="bi bi-briefcase"></i> {{ placement.company.role }}
+                                    </p>
+                                    <p style="margin: 4px 0; font-size: 14px; color: #6b7280;">
+                                        <i class="bi bi-geo-alt"></i> {{ placement.company.location }} · <i class="bi bi-currency-rupee"></i> {{ placement.company.package }} LPA
+                                    </p>
+                                    {% if placement.interview_date %}
+                                        <p style="margin: 4px 0; font-size: 14px; color: #6b7280;">
+                                            <i class="bi bi-calendar-event"></i> Interview: {{ placement.interview_date }}
+                                            {% if placement.interview_time %}at {{ placement.interview_time }}{% endif %}
+                                        </p>
+                                    {% endif %}
+                                    {% if placement.interview_round %}
+                                        <p style="margin: 4px 0; font-size: 14px; color: #6b7280;">
+                                            <i class="bi bi-list-check"></i> Round: {{ placement.interview_round }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                                <div style="text-align: right; flex-shrink: 0;">
+                                    <span class="status-badge status-{{ placement.status|lower }}">{{ placement.status }}</span>
+                                    {% if placement.status == 'SELECTED' %}
+                                        <p style="margin: 8px 0 0 0; font-size: 12px; color: #10b981; font-weight: 600;">
+                                            <i class="bi bi-check-circle-fill"></i> Congratulations!
+                                        </p>
+                                    {% elif placement.status == 'SHORTLISTED' %}
+                                        <p style="margin: 8px 0 0 0; font-size: 12px; color: #f59e0b; font-weight: 600;">
+                                            <i class="bi bi-star-fill"></i> Prepare Hard!
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if placement.feedback or placement.hr_remarks %}
+                                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; font-size: 13px; color: #6b7280;">
+                                    {% if placement.feedback %}<strong>Feedback:</strong> {{ placement.feedback }}<br>{% endif %}
+                                    {% if placement.hr_remarks %}<strong>HR Remarks:</strong> {{ placement.hr_remarks }}{% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 40px 20px; background: #f9fafb; border-radius: 12px;">
+                    <i class="bi bi-inbox" style="font-size: 48px; color: #d1d5db;"></i>
+                    <p style="color: #6b7280; margin-top: 16px; margin-bottom: 0;">No applications yet.</p>
+                    <p style="color: #9ca3af; font-size: 14px;">
+                        <a href="{% url 'company_list' %}" style="color: #3b82f6; text-decoration: none;">Explore companies</a> and apply to relevant positions.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-file-earmark-pdf"></i> Resume</h4>
+            {% if student.resume %}
+                <p class="mb-3">Your resume is ready for recruiter review.</p>
+                <a href="{{ student.resume.url }}" target="_blank" class="btn btn-primary-custom">
+                    <i class="bi bi-download"></i> View Resume
+                </a>
+            {% else %}
+                <p class="text-muted">No resume uploaded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-stars"></i> Skills</h4>
+            {% if student.skills_list %}
+                {% for skill in student.skills_list %}
+                    <span class="dashboard-pill">{{ skill }}</span>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">No skills added yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-award"></i> Certifications</h4>
+            <p class="text-muted">No certifications added yet. Add verified credentials to strengthen your profile.</p>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-code-square"></i> Coding Profiles</h4>
+            <ul class="list-unstyled dashboard-list">
+                {% if student.github %}<li><a href="{{ student.github }}" target="_blank">GitHub</a></li>{% endif %}
+                {% if student.linkedin %}<li><a href="{{ student.linkedin }}" target="_blank">LinkedIn</a></li>{% endif %}
+                {% if student.leetcode %}<li><a href="{{ student.leetcode }}" target="_blank">LeetCode</a></li>{% endif %}
+                {% if student.hackerrank %}<li><a href="{{ student.hackerrank }}" target="_blank">HackerRank</a></li>{% endif %}
+                {% if not student.github and not student.linkedin and not student.leetcode and not student.hackerrank %}
+                    <li class="text-muted">No coding profiles linked yet.</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-clock-history"></i> Placement History</h4>
+            {% if placements %}
+                <ul class="dashboard-list">
+                    {% for placement in placements %}
+                        <li><strong>{{ placement.company.name }}</strong> — {{ placement.status }}{% if placement.interview_date %} on {{ placement.interview_date }}{% endif %}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No placement activity yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-robot"></i> AI Suggestions</h4>
+            {% if ai_suggestions %}
+                <ul class="dashboard-list">
+                    {% for suggestion in ai_suggestions %}
+                        <li>{{ suggestion }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">You are all set for now.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-building"></i> Upcoming Companies</h4>
+            {% if upcoming_companies %}
+                <ul class="dashboard-list">
+                    {% for company in upcoming_companies %}
+                        <li><strong>{{ company.name }}</strong> — {{ company.role }} · {{ company.package }} LPA</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">No upcoming companies available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="dashboard-card">
+            <h4><i class="bi bi-bell"></i> Notifications</h4>
+            <ul class="dashboard-list">
+                {% for notification in notifications %}
+                    <li><strong>{{ notification.title }}</strong> — {{ notification.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    {% if request.session.role == 'admin' %}
+    <a href="{% url 'edit_student' student.id %}" class="btn btn-warning">
+        <i class="bi bi-pencil"></i> Edit Student
+    </a>
+    {% endif %}
+    <a href="{% url 'students' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Students
+    </a>
+</div>
+
+{% endblock %}

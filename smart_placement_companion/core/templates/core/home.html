@@ -1,0 +1,631 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Home - Placement Management System{% endblock %}
+
+{% block content %}
+
+<!-- Hero Carousel Section -->
+<div class="p-0 overflow-hidden mb-5">
+    <div id="homepageCarousel" class="carousel slide carousel-fade shadow-sm" data-bs-ride="carousel"
+        data-bs-interval="6000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="2"></button>
+        </div>
+
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="hero-overlay"
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, var(--rv-navy), transparent); opacity: 0.8; z-index: 1;">
+                </div>
+                <img src="{% static 'images/slide1.jpg' %}" class="d-block w-100" alt="Campus"
+                    style="height: 600px; object-fit: cover;"
+                    onerror="this.src='https://images.unsplash.com/photo-1541339907198-e08756ebafe3?w=1600&h=600&fit=crop';">
+                <div class="carousel-caption d-none d-md-block text-start"
+                    style="z-index: 2; left: 10%; bottom: 25%; max-width: 750px;">
+                    <span class="badge bg-warning text-dark mb-3 px-3 py-2 fw-bold text-uppercase"
+                        style="letter-spacing: 1px; background-color: var(--rv-gold) !important;">Admissions Open
+                        2026-27</span>
+                    <h2 class="display-3 fw-black mb-3 text-white"
+                        style="text-shadow: 2px 2px 10px rgba(0,0,0,0.5); font-weight: 900;">STSKK'S TONTADARYA COLLEGE
+                        OF ENGINEERING</h2>
+                    <p class="lead mb-4 fw-medium text-light fs-4">Empowering generations through technical innovation
+                        and academic excellence in Gadag.</p>
+                    <div class="d-flex gap-3">
+                        {% if request.session.role == 'student' %}
+                        <a href="{% url 'home' %}" class="btn btn-lg px-5 fw-bold shadow-lg text-white"
+                            style="background-color: var(--rv-gold); border: none; border-radius: 0;">STUDENT PORTAL</a>
+                        {% else %}
+                        <a href="{% url 'student_login' %}" class="btn btn-lg px-5 fw-bold shadow-lg text-white"
+                            style="background-color: var(--rv-gold); border: none; border-radius: 0;">STUDENT PORTAL</a>
+                        {% endif %}
+                        <a href="{% url 'company_list' %}" class="btn btn-outline-light btn-lg px-5 fw-bold"
+                            style="border-radius: 0;">OUR RECRUITERS</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="hero-overlay"
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(8, 16, 43, 0.7); z-index: 1;">
+                </div>
+                <img src="{% static 'images/slide2.jpg' %}" class="d-block w-100" alt="Excellence"
+                    style="height: 600px; object-fit: cover;"
+                    onerror="this.src='https://images.unsplash.com/photo-1523050335392-9bef867a0013?w=1600&h=600&fit=crop';">
+                <div class="carousel-caption d-none d-md-block text-center" style="z-index: 2; bottom: 35%;">
+                    <h2 class="display-3 fw-black mb-3 text-white" style="font-weight: 900;">INNOVATION POWERED BY
+                        KNOWLEDGE</h2>
+                    <p class="lead mb-4 fw-medium fs-4">Preparing global leaders since 25+ years.</p>
+                    <a href="#" class="btn btn-warning btn-lg px-5 fw-bold"
+                        style="background-color: var(--rv-gold); border: none; border-radius: 0;">LEARN MORE</a>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="hero-overlay"
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to left, var(--rv-navy), transparent); opacity: 0.8; z-index: 1;">
+                </div>
+                <img src="{% static 'images/slide3.jpg' %}" class="d-block w-100" alt="Future"
+                    style="height: 600px; object-fit: cover;"
+                    onerror="this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600&h=600&fit=crop';">
+                <div class="carousel-caption d-none d-md-block text-end"
+                    style="z-index: 2; right: 10%; bottom: 25%; max-width: 750px;">
+                    <h2 class="display-3 fw-black mb-3 text-white" style="font-weight: 900;">SHAPING THE FUTURE READY
+                        ENGINEERS</h2>
+                    <p class="lead mb-4 fw-medium text-light fs-4">Join our community of innovators and problem solvers
+                        today.</p>
+                    <a href="{% url 'login' %}" class="btn btn-lg px-5 fw-bold shadow-lg text-white"
+                        style="background-color: var(--rv-gold); border: none; border-radius: 0;">GET STARTED</a>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#homepageCarousel" data-bs-slide="prev"
+            style="z-index: 3;">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#homepageCarousel" data-bs-slide="next"
+            style="z-index: 3;">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</div>
+
+<!-- RVU Inspired About Us Section -->
+<div class="container mb-5 py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-5 mb-4 mb-lg-0">
+            <div class="position-relative">
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=600&h=600&fit=crop"
+                    class="img-fluid rounded-0 shadow-lg" style="border-left: 12px solid var(--rv-gold);"
+                    alt="College Campus">
+            </div>
+        </div>
+        <div class="col-lg-7 ps-lg-5">
+            <h2 class="section-header">Academic Excellence & Legacy</h2>
+            <p class="lead fw-bold mb-4" style="color: var(--rv-navy); font-size: 1.4rem;">Building the future through
+                technical mastery each day.</p>
+            <p class="text-muted mb-4">STSKK'S Tontadarya College of Engineering (TCE), Gadag, is a premier educational
+                institution committed to excellence in technical education. With over 25 years of academic legacy, we
+                provide a vibrant environment for learning, research, and holistic development.</p>
+
+            <div class="row g-4 mb-5">
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-patch-check-fill text-warning fs-3 me-3"
+                            style="color: var(--rv-gold) !important;"></i>
+                        <h5 class="fw-bold m-0" style="color: var(--rv-navy);">AICTE Approved</h5>
+                    </div>
+                    <p class="small text-muted mb-0">Complying with global standards in technical education.</p>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-trophy-fill text-warning fs-3 me-3"
+                            style="color: var(--rv-gold) !important;"></i>
+                        <h5 class="fw-bold m-0" style="color: var(--rv-navy);">25+ Years Legacy</h5>
+                    </div>
+                    <p class="small text-muted mb-0">A history of producing successful global engineers.</p>
+                </div>
+            </div>
+
+            <a href="#" class="btn py-3 px-5 fw-bold text-white shadow-lg"
+                style="background: var(--rv-navy); border-radius: 0; letter-spacing: 1px;">DISCOVER MORE <i
+                    class="bi bi-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- Premium Student Dashboard -->
+{% if request.session.role == 'student' or request.session.student_id %}
+<div class="container mb-5 mt-n4">
+    <div class="student-dashboard-wrapper shadow-lg rounded-4 overflow-hidden border-0" data-aos="fade-up">
+        <div class="row g-0">
+            <!-- Left Sidebar: Profile Summary -->
+            <div class="col-lg-4 bg-navy p-4 text-white dashboard-sidebar">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="profile-pic-container me-3">
+                        {% if student.profile_picture %}
+                            <img src="{{ student.profile_picture.url }}" alt="{{ student.name }}" class="rounded-circle border border-3 border-gold shadow" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-gold text-navy d-flex align-items-center justify-content-center shadow" style="width: 80px; height: 80px; font-size: 2rem; font-weight: 900;">
+                                {{ student.name|slice:":1" }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h4 class="fw-black mb-0" style="font-weight: 900;">Student Portal</h4>
+                        <p class="small opacity-75 mb-0 text-gold fw-bold text-uppercase" style="letter-spacing: 1px;">{{ student.name }} | {{ student.branch }}</p>
+                    </div>
+                </div>
+
+                <div class="profile-stats mb-4">
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="opacity-75">CGPA</span>
+                        <span class="fw-bold">{{ student.cgpa }} / 10.0</span>
+                    </div>
+                    <div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">
+                        <div class="progress-bar bg-gold" style="width: {{ student.cgpa|add:0 }}0%;"></div>
+                    </div>
+                </div>
+
+                <div class="readiness-gauge mb-4 p-3 rounded-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-cpu me-2"></i> Skill Readiness</h6>
+                        <span class="badge bg-gold text-navy fw-black">{{ skill_readiness }}%</span>
+                    </div>
+                    <div class="progress" style="height: 10px; background: rgba(255,255,255,0.1);">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: {{ skill_readiness }}%;"></div>
+                    </div>
+                    <p class="small opacity-50 mt-2 mb-0" style="font-size: 0.75rem;">Based on your latest resume analysis.</p>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'student_profile' %}" class="btn btn-outline-light border-2 fw-bold">VIEW FULL PROFILE</a>
+                    <a href="{% url 'resume:analyze_resume' %}" class="btn btn-gold text-navy fw-black">RE-ANALYZE RESUME</a>
+                    <a href="{% url 'interview:interview_preparation' %}" class="btn btn-outline-primary border-2 fw-bold">VOICE MOCK INTERVIEW</a>
+                    <a href="{% url 'interview:practice_session' %}" class="btn btn-outline-warning border-2 fw-bold">APTITUDE PRACTICE</a>
+                </div>
+            </div>
+
+            <!-- Right Content Area -->
+            <div class="col-lg-8 bg-white p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-black text-navy mb-0" style="font-weight: 900;">Career Overview</h3>
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm fw-bold border" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-calendar-event me-2"></i> Activity: This Month
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Cards -->
+                <div class="row g-3 mb-4 text-center">
+                    <div class="col-4">
+                        <div class="p-3 border rounded-4 bg-light h-100 transition-hover">
+                            <div class="display-6 fw-black text-navy mb-0">{{ applied_count }}</div>
+                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Applied</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 border rounded-4 bg-light h-100 transition-hover border-warning" style="border-width: 2px !important;">
+                            <div class="display-6 fw-black text-warning mb-0">{{ shortlisted_count }}</div>
+                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Shortlisted</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 border rounded-4 bg-light h-100 transition-hover border-success" style="border-width: 2px !important;">
+                            <div class="display-6 fw-black text-success mb-0">{{ selected_count }}</div>
+                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Selected</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Resume</h6>
+                        {% if student.resume %}
+                            <div class="alert alert-success border-0 shadow-sm rounded-3 py-2 px-3 mb-2">
+                                <i class="bi bi-file-earmark-pdf-fill me-2"></i> Resume uploaded and ready for recruiters.
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning border-0 shadow-sm rounded-3 py-2 px-3 mb-2">
+                                <i class="bi bi-exclamation-circle me-2"></i> Upload your resume to strengthen your profile.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Skills</h6>
+                        {% if student.skills_list %}
+                            {% for skill in student.skills_list %}
+                                <span class="badge bg-light text-navy me-2 mb-2">{{ skill }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-secondary border-0 shadow-sm rounded-3 py-2 px-3 mb-2">Add your key skills for better matches.</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Certifications</h6>
+                        <div class="alert alert-secondary border-0 shadow-sm rounded-3 py-2 px-3 mb-2">No certifications added yet.</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Coding Profiles</h6>
+                        <ul class="small text-muted ps-3 mb-0">
+                            {% if student.github %}<li><a href="{{ student.github }}" target="_blank">GitHub</a></li>{% endif %}
+                            {% if student.linkedin %}<li><a href="{{ student.linkedin }}" target="_blank">LinkedIn</a></li>{% endif %}
+                            {% if student.leetcode %}<li><a href="{{ student.leetcode }}" target="_blank">LeetCode</a></li>{% endif %}
+                            {% if student.hackerrank %}<li><a href="{{ student.hackerrank }}" target="_blank">HackerRank</a></li>{% endif %}
+                            {% if not student.github and not student.linkedin and not student.leetcode and not student.hackerrank %}
+                                <li>No coding profiles linked yet.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Placement History</h6>
+                        {% if my_recent_applications %}
+                            {% for placement in my_recent_applications %}
+                                <div class="small mb-2"><strong>{{ placement.company.name }}</strong> — {{ placement.status }}</div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-secondary border-0 shadow-sm rounded-3 py-2 px-3 mb-2">No placement activity yet.</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">AI Suggestions 💥</h6>
+                        <div class="recommendations-container">
+                            {% for rec in ai_recommendations %}
+                            <div class="alert alert-info border-0 shadow-sm rounded-3 py-2 px-3 mb-2 d-flex align-items-start" style="background: rgba(13, 202, 240, 0.1);">
+                                <i class="bi bi-lightning-charge-fill text-info me-2 mt-1"></i>
+                                <span class="small fw-medium">{{ rec }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <a href="{% url 'interview:predictor' %}" class="btn btn-navy btn-sm w-100 fw-bold mt-2 py-2">
+                            <i class="bi bi-journal-check me-2"></i> Start Interview Prep
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Upcoming Companies</h6>
+                        {% if top_companies %}
+                            {% for company in top_companies %}
+                                <div class="small mb-2"><strong>{{ company.name }}</strong> — {{ company.role }} · {{ company.package }} LPA</div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-secondary border-0 shadow-sm rounded-3 py-2 px-3 mb-2">No upcoming companies available.</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Notifications</h6>
+                        {% if student.resume %}
+                            <div class="small mb-2"><strong>Resume ready</strong> — Your resume is uploaded and visible to recruiters.</div>
+                        {% else %}
+                            <div class="small mb-2"><strong>Resume pending</strong> — Upload your resume to become discoverable.</div>
+                        {% endif %}
+                        {% if student.skills_list %}
+                            <div class="small mb-2"><strong>Skills updated</strong> — Your profile is ready for better job matches.</div>
+                        {% else %}
+                            <div class="small mb-2"><strong>Skills missing</strong> — Add more skills to improve matches.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-gold { color: var(--rv-gold) !important; }
+    .btn-gold { background-color: var(--rv-gold) !important; border-color: var(--rv-gold) !important; color: var(--rv-navy) !important; }
+    .fw-black { font-weight: 900 !important; }
+    
+    .student-dashboard-wrapper {
+        margin-top: -80px;
+        position: relative;
+        z-index: 10;
+        background: #fff;
+    }
+
+    .dashboard-sidebar {
+        background: linear-gradient(135deg, var(--rv-navy) 0%, #0c1a4d 100%);
+    }
+
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+
+    .interview-card {
+        transition: all 0.2s ease;
+    }
+    .interview-card:hover {
+        background: #f8f9fa;
+        border-color: var(--rv-gold) !important;
+    }
+
+    @media (max-width: 991.98px) {
+        .student-dashboard-wrapper {
+            margin-top: 0;
+        }
+    }
+</style>
+{% endif %}
+
+<!-- Statistics Section (Circular RVU Style) -->
+<div class="container mb-5 pb-4">
+    <div class="row g-4 text-center">
+        <div class="col-md-3">
+            <div class="glass-section h-100 p-5">
+                <div class="icon-circle"><i class="bi bi-people-fill"></i></div>
+                <h3 class="display-6 fw-black mb-1" style="color: var(--rv-navy); font-weight: 900;">{{ total_students
+                    }}</h3>
+                <p class="text-uppercase small fw-bold text-muted mb-0">Registered Students</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-section h-100 p-5" style="background: var(--rv-navy); color: #fff;">
+                <div class="icon-circle" style="background: var(--rv-gold); color: var(--rv-navy);"><i
+                        class="bi bi-building-check"></i></div>
+                <h3 class="display-6 fw-black mb-1 text-white" style="font-weight: 900;">{{ total_companies }}</h3>
+                <p class="text-uppercase small fw-bold text-white-50 mb-0">Partner Companies</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-section h-100 p-5">
+                <div class="icon-circle"><i class="bi bi-briefcase-fill"></i></div>
+                <h3 class="display-6 fw-black mb-1" style="color: var(--rv-navy); font-weight: 900;">{{ total_placements
+                    }}</h3>
+                <p class="text-uppercase small fw-bold text-muted mb-0">Offers Made</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="glass-section h-100 p-5" style="background: var(--rv-gold); color: var(--rv-navy);">
+                <div class="icon-circle" style="background: var(--rv-navy); color: #fff;"><i
+                        class="bi bi-graph-up-arrow"></i></div>
+                <h3 class="display-6 fw-black mb-1" style="font-weight: 900;">{{ placement_percentage }}%</h3>
+                <p class="text-uppercase small fw-bold opacity-75 mb-0">Placement Success</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- High Contrast Featured Section (RVU Banner Style) -->
+<div class="py-5 mb-5 shadow-lg border-top border-bottom"
+    style="background: var(--rv-dark-navy); border-color: var(--rv-gold) !important;">
+    <div class="container text-center text-white py-5">
+        <h2 class="display-5 fw-black text-uppercase mb-4" style="color: var(--rv-gold); font-weight: 900;">Why
+            Tontadarya College?</h2>
+        <p class="lead mb-5 opacity-75 fs-4 mx-auto" style="max-width: 800px;">Providing an environment that fosters
+            intellectual curiosity and professional growth.</p>
+        <div class="row g-5">
+            <div class="col-md-4">
+                <div class="mb-3 text-warning"><i class="bi bi-laptop fs-1"></i></div>
+                <h4 class="fw-bold mb-3 text-white">Smart Infrastructure</h4>
+                <p class="small opacity-75">Centrally located campus with modern laboratories and hi-tech classrooms.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3 text-warning"><i class="bi bi-journal-text fs-1"></i></div>
+                <h4 class="fw-bold mb-3 text-white">Advanced Curriculum</h4>
+                <p class="small opacity-75">Curated academic programs that bridge the gap between classroom and
+                    industry.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3 text-warning"><i class="bi bi-headset fs-1"></i></div>
+                <h4 class="fw-bold mb-3 text-white">Career Guidance</h4>
+                <p class="small opacity-75">Dedicated 24/7 support for placement training, counseling, and interview
+                    prep.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Announcements & Updates -->
+<div class="container mb-5 pb-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-header m-0">Latest Announcements</h2>
+        <a href="#" class="text-navy fw-bold text-decoration-none" style="color: var(--rv-navy);">VIEW ALL UPDATES <i
+                class="bi bi-chevron-right small"></i></a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm" style="border-top: 8px solid var(--rv-navy) !important;">
+                <div class="card-body p-4">
+                    <div class="text-warning fw-bold mb-2 small" style="color: var(--rv-gold) !important;">APR 24, 2024
+                    </div>
+                    <h5 class="fw-bold mb-3" style="color: var(--rv-navy);">Special Recruitment Drive: Top MNCs</h5>
+                    <p class="text-muted small">Infosys and Wipro are conducting a joint drive for the 2024 batch.
+                        Ensure your profile is updated.</p>
+                    <a href="#" class="btn btn-link p-0 fw-bold text-decoration-none"
+                        style="color: var(--rv-gold);">READ MORE <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm" style="border-top: 8px solid var(--rv-gold) !important;">
+                <div class="card-body p-4">
+                    <div class="text-warning fw-bold mb-2 small" style="color: var(--rv-gold) !important;">MAY 02, 2024
+                    </div>
+                    <h5 class="fw-bold mb-3" style="color: var(--rv-navy);">AI/ML Certification Workshop</h5>
+                    <p class="text-muted small">Three-day intensive workshop on Generative AI and Machine Learning by
+                        industry leaders.</p>
+                    <a href="#" class="btn btn-link p-0 fw-bold text-decoration-none"
+                        style="color: var(--rv-gold);">READ MORE <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm bg-light" style="border: 1px solid rgba(0,0,0,0.05) !important;">
+                <div class="card-body p-4 text-center">
+                    <div class="icon-circle bg-white shadow-none mb-3"
+                        style="width: 60px; height: 60px; font-size: 1.8rem; border: 2px solid var(--rv-gold);"><i
+                            class="bi bi-bell-fill"></i></div>
+                    <h6 class="fw-bold mb-2" style="color: var(--rv-navy);">MANDATORY ACTION</h6>
+                    <p class="small mb-4">Complete your semester registration and scholarship forms by April 30.</p>
+                    {% if request.session.role == 'admin' %}
+                    <a href="{% url 'dashboard' %}" class="btn w-100 fw-bold text-white"
+                        style="background: var(--rv-navy); border-radius: 0;">UPDATE NOW</a>
+                    {% else %}
+                    <a href="{% url 'students' %}" class="btn w-100 fw-bold text-white"
+                        style="background: var(--rv-navy); border-radius: 0;">VIEW MY PROFILE</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Placement Partners (Professional Official Style Ticker) -->
+<div class="mb-5 pb-5 overflow-hidden py-5" style="background-color: #f8f9fa;">
+    <div class="container mb-4">
+        <h2 class="section-header mx-auto mb-2" style="display: table;">Placement Excellence</h2>
+        <p class="text-center text-muted fw-bold mt-0" style="font-size: 1.1rem; color: var(--rv-navy) !important;">Our
+            commitment to student success is reflected in our outstanding placement record</p>
+    </div>
+
+    <div class="official-ticker-container bg-white py-4 shadow-sm border-top border-bottom">
+        <div class="official-ticker-wrapper">
+            <!-- Set 1 -->
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg"
+                    alt="Infosys"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+                    alt="Google"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Tata_Consultancy_Services_Logo.svg"
+                    alt="TCS"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Wipro_Primary_Logo_Color_RGB.svg"
+                    alt="Wipro"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg"
+                    alt="Accenture"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/4/43/Cognizant_logo_2022.svg" alt="Cognizant">
+            </div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+                    alt="Amazon"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg"
+                    alt="IBM"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+                    alt="Microsoft"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/9/93/Capgemini_logo_2017.svg" alt="Capgemini">
+            </div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/8a/HCL_Technologies_logo.svg" alt="HCL"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_of_Deloitte.svg"
+                    alt="Deloitte"></div>
+
+            <!-- Set 2 (Seamless loop) -->
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg"
+                    alt="Infosys"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+                    alt="Google"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Tata_Consultancy_Services_Logo.svg"
+                    alt="TCS"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Wipro_Primary_Logo_Color_RGB.svg"
+                    alt="Wipro"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg"
+                    alt="Accenture"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/4/43/Cognizant_logo_2022.svg" alt="Cognizant">
+            </div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+                    alt="Amazon"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg"
+                    alt="IBM"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+                    alt="Microsoft"></div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/9/93/Capgemini_logo_2017.svg" alt="Capgemini">
+            </div>
+            <div class="ticker-logo"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/8a/HCL_Technologies_logo.svg" alt="HCL"></div>
+            <div class="ticker-logo"><img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_of_Deloitte.svg"
+                    alt="Deloitte"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .official-ticker-container {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+    }
+
+    .official-ticker-wrapper {
+        display: flex;
+        width: max-content;
+        animation: official-scroll 50s linear infinite;
+    }
+
+    .ticker-logo {
+        flex: 0 0 auto;
+        padding: 0 50px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ticker-logo img {
+        height: 45px;
+        width: auto;
+        max-width: 160px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    @keyframes official-scroll {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    /* Professional Interaction: Pause on Hover */
+    .official-ticker-container:hover .official-ticker-wrapper {
+        animation-play-state: paused;
+    }
+
+    /* Subtle lift effect on logo hover */
+    .ticker-logo:hover img {
+        transform: scale(1.08);
+    }
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var carouselElement = document.getElementById('homepageCarousel');
+        if (carouselElement) {
+            var carousel = new bootstrap.Carousel(carouselElement, {
+                interval: 5000,
+                wrap: true,
+                touch: true,
+                pause: 'hover'
+            });
+        }
+    });
+</script>
+{% endblock %}

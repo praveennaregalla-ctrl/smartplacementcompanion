@@ -1,0 +1,317 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ student.name }} | Professional Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-navy { color: var(--rv-navy) !important; }
+    .text-gold { color: var(--rv-gold) !important; }
+    .bg-gold { background-color: var(--rv-gold) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; }
+    .btn-navy:hover { background-color: #0c1a4d !important; transform: translateY(-2px); }
+    .fw-black { font-weight: 900 !important; }
+
+    .profile-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom: 24px;
+        position: relative;
+        border: 1px solid rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .profile-banner-container {
+        height: 180px;
+        background: linear-gradient(135deg, var(--rv-navy) 0%, #0c1a4d 100%);
+        position: relative;
+    }
+
+    .profile-avatar-container {
+        position: absolute;
+        top: 100px;
+        left: 30px;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 6px solid #fff;
+        background: #fff;
+        overflow: hidden;
+        z-index: 5;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .profile-avatar-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-header-info {
+        padding: 85px 30px 30px;
+    }
+
+    .skill-badge {
+        background: rgba(11, 60, 109, 0.05);
+        color: var(--rv-navy);
+        border: 1px solid rgba(11, 60, 109, 0.1);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+    .skill-badge:hover {
+        background: var(--rv-navy);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .analytics-stat {
+        padding: 20px;
+        border-radius: 12px;
+        background: #f8f9fa;
+        text-align: center;
+        border: 1px solid #eee;
+    }
+
+    .application-item {
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+    .application-item:hover {
+        background: #fcfcfc;
+        border-left-color: var(--rv-gold);
+        padding-left: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Header Card -->
+            <div class="profile-card" data-aos="fade-up">
+                <div class="profile-banner-container">
+                    <div class="position-absolute top-0 end-0 p-4 opacity-10">
+                        <i class="bi bi-mortarboard display-1 text-white"></i>
+                    </div>
+                </div>
+                <div class="profile-avatar-container">
+                    {% if student.profile_picture %}
+                        <img src="{{ student.profile_picture.url }}" alt="{{ student.name }}">
+                    {% else %}
+                        <div class="h-100 w-100 bg-gold text-navy d-flex align-items-center justify-content-center fw-black display-4">
+                            {{ student.name|slice:":1" }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="profile-header-info">
+                    <div class="row align-items-end">
+                        <div class="col-md-8">
+                            <h1 class="fw-black text-navy mb-1" style="font-size: 2.2rem;">{{ student.name }}</h1>
+                            <p class="lead text-muted mb-3">{{ student.headline|default:"Student at S.T.S.K.K'S Tontadarya College of Engineering" }}</p>
+                            <div class="d-flex align-items-center gap-3 text-muted small mb-4">
+                                <span><i class="bi bi-geo-alt-fill text-gold me-1"></i> Gadag, Karnataka</span>
+                                {% if student.usn %}
+                                <span>•</span>
+                                <span>USN: <strong>{{ student.usn }}</strong></span>
+                                {% endif %}
+                                <span>•</span>
+                                <a href="#" class="text-navy fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Info</a>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'edit_profile' %}" class="btn btn-navy px-4 fw-bold rounded-pill">EDIT PROFILE</a>
+                                {% if student.resume %}
+                                    <a href="{{ student.resume.url }}" target="_blank" class="btn btn-outline-navy px-4 fw-bold rounded-pill">VIEW RESUME</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                            <div class="p-3 rounded-4 bg-light d-inline-block text-start border shadow-sm">
+                                <div class="small text-muted fw-bold mb-1">CURRENT ACADEMICS</div>
+                                <div class="fw-black text-navy">{{ student.branch }}</div>
+                                <div class="text-gold fw-bold">CGPA: {{ student.cgpa }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="profile-card p-5" data-aos="fade-up">
+                <h4 class="fw-black text-navy mb-4">Professional Summary</h4>
+                <div class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
+                    {% if student.bio %}
+                        {{ student.bio|linebreaks }}
+                    {% else %}
+                        <p class="fst-italic">Your profile summary is empty. Add a brief bio to tell recruiters about your goals and expertise.</p>
+                        <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline-navy fw-bold">ADD BIO</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="profile-card p-5" data-aos="fade-up">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-black text-navy mb-0">Core Expertise</h4>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline-navy fw-bold rounded-pill">MANAGE SKILLS</a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for skill in student.skills_list %}
+                        <span class="skill-badge">{{ skill }}</span>
+                    {% empty %}
+                        <p class="text-muted fst-italic">No skills highlighted yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Applications Section -->
+            <div class="profile-card p-5" data-aos="fade-up">
+                <h4 class="fw-black text-navy mb-4">Application History</h4>
+                {% if applications %}
+                    <div class="list-group list-group-flush">
+                        {% for app in applications %}
+                        <div class="list-group-item px-0 py-4 border-0 border-bottom application-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h6 class="fw-black text-navy mb-1">{{ app.company.name }}</h6>
+                                    <p class="text-muted mb-0 small">{{ app.company.role }} • {{ app.company.location }}</p>
+                                    <div class="mt-2 small text-muted">Applied on {{ app.created_at|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                    <span class="badge rounded-pill px-3 py-2 fw-bold 
+                                        {% if app.status == 'SELECTED' %}bg-success{% elif app.status == 'REJECTED' %}bg-danger{% elif app.status == 'SHORTLISTED' %}bg-info text-navy{% else %}bg-warning text-navy{% endif %} mb-2">
+                                        {{ app.status }}
+                                    </span>
+                                    <div><a href="{% url 'company_detail' app.company.id %}" class="small fw-bold text-navy">View Company <i class="bi bi-chevron-right"></i></a></div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5 opacity-50">
+                        <i class="bi bi-inbox display-4 mb-3 d-block"></i>
+                        <p>No active applications found.</p>
+                        <a href="{% url 'company_list' %}" class="btn btn-navy btn-sm fw-bold">EXPLORE COMPANIES</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="profile-card p-4" data-aos="fade-left">
+                <h6 class="fw-black text-navy mb-4">Visibility Insights</h6>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="analytics-stat">
+                            <div class="h4 fw-black text-navy mb-0">124</div>
+                            <div class="small text-muted fw-bold">Profile Views</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="analytics-stat">
+                            <div class="h4 fw-black text-navy mb-0">42</div>
+                            <div class="small text-muted fw-bold">Search Appearances</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card p-4" data-aos="fade-left" data-aos-delay="100">
+                <h6 class="fw-black text-navy mb-4">AI Readiness Actions</h6>
+                <div class="d-grid gap-3">
+                    <a href="{% url 'resume:analyze_resume' %}" class="text-decoration-none p-3 rounded-4 bg-light border d-flex align-items-center transition-all hover-shadow">
+                        <div class="icon-sm bg-navy text-white rounded-3 p-2 me-3"><i class="bi bi-cpu"></i></div>
+                        <div>
+                            <div class="fw-bold text-navy small">Resume Score</div>
+                            <div class="text-muted smaller" style="font-size: 0.7rem;">Get AI feedback</div>
+                        </div>
+                    </a>
+                    <a href="{% url 'interview:predictor' %}" class="text-decoration-none p-3 rounded-4 bg-light border d-flex align-items-center transition-all hover-shadow">
+                        <div class="icon-sm bg-gold text-navy rounded-3 p-2 me-3"><i class="bi bi-camera-video"></i></div>
+                        <div>
+                            <div class="fw-bold text-navy small">Mock Interview</div>
+                            <div class="text-muted smaller" style="font-size: 0.7rem;">AI Prep Session</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-navy text-white p-4">
+                <h5 class="modal-title fw-black">Contact Information</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle bg-light m-0 me-3 shadow-none" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="bi bi-envelope-at"></i></div>
+                    <div>
+                        <div class="small text-muted fw-bold">Official Email</div>
+                        <div class="fw-bold text-navy">{{ student.email }}</div>
+                    </div>
+                </div>
+                {% if student.phone %}
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle bg-light m-0 me-3 shadow-none" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="bi bi-telephone"></i></div>
+                    <div>
+                        <div class="small text-muted fw-bold">Phone Number</div>
+                        <div class="fw-bold text-navy">{{ student.phone }}</div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if student.linkedin %}
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle bg-light m-0 me-3 shadow-none" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="bi bi-linkedin"></i></div>
+                    <div>
+                        <div class="small text-muted fw-bold">LinkedIn</div>
+                        <a href="{{ student.linkedin }}" target="_blank" class="fw-bold text-navy">View Profile</a>
+                    </div>
+                </div>
+                {% endif %}
+                {% if student.github %}
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle bg-light m-0 me-3 shadow-none" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="bi bi-github"></i></div>
+                    <div>
+                        <div class="small text-muted fw-bold">GitHub</div>
+                        <a href="{{ student.github }}" target="_blank" class="fw-bold text-navy">View Profile</a>
+                    </div>
+                </div>
+                {% endif %}
+                {% if student.leetcode %}
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle bg-light m-0 me-3 shadow-none" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="bi bi-cpu"></i></div>
+                    <div>
+                        <div class="small text-muted fw-bold">LeetCode</div>
+                        <a href="{{ student.leetcode }}" target="_blank" class="fw-bold text-navy">View Profile</a>
+                    </div>
+                </div>
+                {% endif %}
+                {% if student.hackerrank %}
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle bg-light m-0 me-3 shadow-none" style="width: 50px; height: 50px; font-size: 1.2rem;"><i class="bi bi-pc-display"></i></div>
+                    <div>
+                        <div class="small text-muted fw-bold">HackerRank</div>
+                        <a href="{{ student.hackerrank }}" target="_blank" class="fw-bold text-navy">View Profile</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

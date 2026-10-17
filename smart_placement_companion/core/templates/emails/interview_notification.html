@@ -1,0 +1,31 @@
+<html>
+<body style="font-family: Arial, sans-serif; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e9ecef; border-radius: 12px;">
+        <div style="background: #003366; color: #ffffff; padding: 20px; border-radius: 12px 12px 0 0;">
+            <h2 style="margin: 0;">Interview Scheduled</h2>
+            <p style="margin: 0.5rem 0 0;">{{ company_name }}</p>
+        </div>
+        <div style="padding: 20px;">
+            <p>Dear {{ student_name }},</p>
+            <p>Your interview for <strong>{{ job_role }}</strong> at <strong>{{ company_name }}</strong> has been scheduled.</p>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #e9ecef;"><strong>Interview Date</strong></td>
+                    <td style="padding: 8px; border: 1px solid #e9ecef;">{{ interview_date }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #e9ecef;"><strong>Interview Time</strong></td>
+                    <td style="padding: 8px; border: 1px solid #e9ecef;">{{ interview_time }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #e9ecef;"><strong>Round</strong></td>
+                    <td style="padding: 8px; border: 1px solid #e9ecef;">{{ interview_round }}</td>
+                </tr>
+            </table>
+            <p>Please be ready at least 10 minutes before the scheduled time and ensure your contact details are up to date.</p>
+            <p>Best regards,<br>{{ company_name }} HR Team</p>
+            <p style="font-size: 0.9rem; color: #6c757d;">For any questions, visit <a href="{{ company_url }}" style="color: #003366;">our portal</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

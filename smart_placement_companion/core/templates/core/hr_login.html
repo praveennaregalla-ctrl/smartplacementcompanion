@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+
+{% block title %}HR Login - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center" style="min-height: calc(100vh - 300px); align-items: center;">
+    <div class="col-md-5">
+        <div class="card-simple glass-section">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-badge-fill" style="font-size: 3rem; color: #003366;"></i>
+                <h3 style="color: #003366; font-weight: 600; margin-top: 1rem;">HR Login</h3>
+                <p class="text-muted">Use your company HR credentials to manage job postings and interview scheduling.</p>
+            </div>
+            <form method="POST">
+                {% csrf_token %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                <div class="mb-3">
+                    <label for="email" class="form-label">HR Email</label>
+                    <input type="email" name="email" class="form-control" id="email" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100 mb-3">
+                    <i class="bi bi-box-arrow-in-right"></i> LOGIN
+                </button>
+                <div class="text-center">
+                    <a href="{% url 'welcome' %}" class="text-decoration-none">
+                        <i class="bi bi-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

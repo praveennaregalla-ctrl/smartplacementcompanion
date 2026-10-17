@@ -1,0 +1,209 @@
+{% extends "core/base.html" %}
+
+{% block title %}Add Company - Placement Portal{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1>Add New Company</h1>
+    <p>Enter company details and placement information</p>
+</div>
+
+<!-- Form -->
+<div class="form-container glass-section">
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-circle-fill"></i> Please correct the errors below.
+        </div>
+        {% endif %}
+        
+        <h5 class="mb-3" style="color: #003366; font-weight: 600; border-bottom: 2px solid #003366; padding-bottom: 0.5rem;">
+            Company Information
+        </h5>
+        
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label for="{{ form.name.id_for_label }}" class="form-label">
+                    Company Name <span class="text-danger">*</span>
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6">
+                <label for="{{ form.location.id_for_label }}" class="form-label">
+                    Location <span class="text-danger">*</span>
+                </label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                <div class="text-danger small mt-1">{{ form.location.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6">
+                <label for="{{ form.role.id_for_label }}" class="form-label">
+                    Job Role <span class="text-danger">*</span>
+                </label>
+                {{ form.role }}
+                {% if form.role.errors %}
+                <div class="text-danger small mt-1">{{ form.role.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6">
+                <label for="{{ form.package.id_for_label }}" class="form-label">
+                    Package (LPA) <span class="text-danger">*</span>
+                </label>
+                {{ form.package }}
+                {% if form.package.errors %}
+                <div class="text-danger small mt-1">{{ form.package.errors.0 }}</div>
+                {% endif %}
+                <small class="text-muted">Annual package in Lakhs Per Annum</small>
+            </div>
+
+            <div class="col-12">
+                <label for="{{ form.eligibility.id_for_label }}" class="form-label">
+                    Eligibility Description
+                </label>
+                {{ form.eligibility }}
+                {% if form.eligibility.errors %}
+                <div class="text-danger small mt-1">{{ form.eligibility.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="col-12">
+                <label for="{{ form.required_skills.id_for_label }}" class="form-label">
+                    Required Skills
+                </label>
+                {{ form.required_skills }}
+                {% if form.required_skills.errors %}
+                <div class="text-danger small mt-1">{{ form.required_skills.errors.0 }}</div>
+                {% endif %}
+                <small class="text-muted">Comma-separated skills for the role.</small>
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.interview_process.id_for_label }}" class="form-label">
+                    Interview Process
+                </label>
+                {{ form.interview_process }}
+                {% if form.interview_process.errors %}
+                <div class="text-danger small mt-1">{{ form.interview_process.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.hiring_year.id_for_label }}" class="form-label">
+                    Hiring Year
+                </label>
+                {{ form.hiring_year }}
+                {% if form.hiring_year.errors %}
+                <div class="text-danger small mt-1">{{ form.hiring_year.errors.0 }}</div>
+                {% endif %}
+                <small class="text-muted">Year when this hiring drive applies.</small>
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.application_deadline.id_for_label }}" class="form-label">
+                    Application Deadline
+                </label>
+                {{ form.application_deadline }}
+                {% if form.application_deadline.errors %}
+                <div class="text-danger small mt-1">{{ form.application_deadline.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.hr_contact_name.id_for_label }}" class="form-label">
+                    HR Contact Name
+                </label>
+                {{ form.hr_contact_name }}
+                {% if form.hr_contact_name.errors %}
+                <div class="text-danger small mt-1">{{ form.hr_contact_name.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.hr_email.id_for_label }}" class="form-label">
+                    HR Email
+                </label>
+                {{ form.hr_email }}
+                {% if form.hr_email.errors %}
+                <div class="text-danger small mt-1">{{ form.hr_email.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.hr_password.id_for_label }}" class="form-label">
+                    HR Password
+                </label>
+                {{ form.hr_password }}
+                {% if form.hr_password.errors %}
+                <div class="text-danger small mt-1">{{ form.hr_password.errors.0 }}</div>
+                {% endif %}
+                <small class="text-muted">Use this to grant HR access for this company.</small>
+            </div>
+        </div>
+        
+        <h5 class="mb-3" style="color: #003366; font-weight: 600; border-bottom: 2px solid #003366; padding-bottom: 0.5rem;">
+            Eligibility Criteria
+        </h5>
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="{{ form.min_cgpa.id_for_label }}" class="form-label">
+                    Minimum CGPA <span class="text-danger">*</span>
+                </label>
+                {{ form.min_cgpa }}
+                {% if form.min_cgpa.errors %}
+                <div class="text-danger small mt-1">{{ form.min_cgpa.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6">
+                <label class="form-label d-block">
+                    Eligible Branches <span class="text-danger">*</span>
+                </label>
+                <div class="branches-grid p-3 border rounded bg-light" style="max-height: 200px; overflow-y: auto;">
+                    <div class="row row-cols-1 row-cols-sm-2 g-2">
+                        {% for choice_value, choice_label in form.fields.branch.choices %}
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="branch" value="{{ choice_value }}" id="branch_{{ choice_value }}"
+                                    {% if choice_value in form.initial.branch or choice_value in form.data.branch %}checked{% endif %}>
+                                <label class="form-check-label small fw-medium" for="branch_{{ choice_value }}">
+                                    {{ choice_label }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if form.branch.errors %}
+                <div class="text-danger small mt-1">{{ form.branch.errors.0 }}</div>
+                {% endif %}
+                <small class="text-muted">{{ form.branch.help_text }}</small>
+            </div>
+        </div>
+        
+        <div class="row g-3 mt-4">
+            <div class="col-md-6">
+                <a href="{% url 'company_list' %}" class="btn btn-secondary w-100">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary-custom w-100">
+                    <i class="bi bi-check-circle"></i> Add Company
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

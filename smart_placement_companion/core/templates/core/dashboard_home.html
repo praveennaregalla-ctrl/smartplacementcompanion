@@ -1,0 +1,547 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.1) 50%);
+        border-radius: 0 0 0 100%;
+    }
+    
+    .stat-card.primary { border-left-color: #0f3b57; }
+    .stat-card.success { border-left-color: #28a745; }
+    .stat-card.warning { border-left-color: #ffc107; }
+    .stat-card.info { border-left-color: #17a2b8; }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+    
+    .stat-icon.primary { background: rgba(15,59,87,0.1); color: #0f3b57; }
+    .stat-icon.success { background: rgba(40,167,69,0.1); color: #28a745; }
+    .stat-icon.warning { background: rgba(255,193,7,0.1); color: #ffc107; }
+    .stat-icon.info { background: rgba(23,162,184,0.1); color: #17a2b8; }
+    
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #2c3e50;
+    }
+    
+    .stat-label {
+        font-size: 14px;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+    }
+    
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .chart-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .quick-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-bottom: 12px;
+    }
+    
+    .quick-action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .admin-module-card {
+        background: #f8fafc;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 16px;
+        height: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .admin-module-card:hover {
+        border-color: #0f3b57;
+        box-shadow: 0 6px 16px rgba(15,59,87,0.08);
+        transform: translateY(-2px);
+    }
+
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-gold { color: var(--rv-gold) !important; }
+    .btn-gold { background-color: var(--rv-gold) !important; border-color: var(--rv-gold) !important; color: var(--rv-navy) !important; }
+    .fw-black { font-weight: 900 !important; }
+
+    .student-dashboard-wrapper {
+        position: relative;
+        z-index: 10;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    .dashboard-sidebar {
+        background: linear-gradient(135deg, var(--rv-navy) 0%, #0c1a4d 100%);
+    }
+
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .status-badge.selected { background: #d4edda; color: #155724; }
+    .status-badge.pending { background: #fff3cd; color: #856404; }
+    .status-badge.rejected { background: #f8d7da; color: #721c24; }
+    
+    @media (max-width: 768px) {
+        .stat-value { font-size: 24px; }
+        .stat-icon { width: 50px; height: 50px; font-size: 24px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="student-dashboard-wrapper shadow-lg rounded-4 overflow-hidden border-0">
+        <div class="row g-0">
+            <div class="col-lg-4 bg-navy p-4 text-white dashboard-sidebar">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="{% static 'images/tce_logo.png' %}" alt="TCE logo" class="rounded-circle border border-white shadow me-3" style="width: 80px; height: 80px; object-fit: contain; background: white; padding: 5px;">
+                    <div>
+                        <h4 class="fw-black mb-0">Admin Portal</h4>
+                        <p class="small opacity-75 mb-0 text-gold fw-bold text-uppercase" style="letter-spacing: 1px;">Placement Control Center</p>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-3 mb-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="opacity-75">Students</span>
+                        <span class="fw-bold">{{ total_students }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="opacity-75">Companies</span>
+                        <span class="fw-bold">{{ total_companies }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span class="opacity-75">Placements</span>
+                        <span class="fw-bold">{{ total_placements }}</span>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'add_student' %}" class="btn btn-outline-light border-2 fw-bold">ADD STUDENT</a>
+                    <a href="{% url 'add_company' %}" class="btn btn-gold text-navy fw-black">ADD COMPANY</a>
+                    <a href="{% url 'dashboard_analytics' %}" class="btn btn-outline-light border-2 fw-bold">VIEW ANALYTICS</a>
+                </div>
+            </div>
+
+            <div class="col-lg-8 bg-white p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-black text-navy mb-0">Admin Overview</h3>
+                    <span class="badge bg-light text-dark border">Live Insights</span>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light h-100 transition-hover">
+                            <div class="display-6 fw-black text-navy mb-0">{{ total_students }}</div>
+                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Registered Students</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light h-100 transition-hover">
+                            <div class="display-6 fw-black text-success mb-0">{{ total_companies }}</div>
+                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Partner Companies</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light h-100 transition-hover">
+                            <div class="display-6 fw-black text-info mb-0">{{ total_placements }}</div>
+                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Total Placements</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-4 bg-light h-100 transition-hover">
+                            <div class="display-6 fw-black text-warning mb-0">{{ placement_rate }}%</div>
+                            <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Placement Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="bi bi-pie-chart-fill me-2" style="color: #0f3b57;"></i>
+                                    Placement Status
+                                </h5>
+                            </div>
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h5 class="chart-title">
+                                    <i class="bi bi-bar-chart-fill me-2" style="color: #0f3b57;"></i>
+                                    Placements by Branch
+                                </h5>
+                            </div>
+                            <canvas id="branchChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <div class="table-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="bi bi-shield-lock me-2" style="color: #0f3b57;"></i>
+                                    Admin Operations
+                                </h5>
+                                <span class="badge bg-light text-dark">Management Hub</span>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-lg-4 col-md-6">
+                                    <a href="{% url 'import_export' %}" class="text-decoration-none">
+                                        <div class="admin-module-card">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-file-earmark-spreadsheet fs-4 me-2" style="color: #0f3b57;"></i>
+                                                <h6 class="mb-0">CSV Import / Export</h6>
+                                            </div>
+                                            <p class="small text-muted mb-0">Import student and company data from CSV files and export current records for reporting.</p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <a href="{% url 'import_students' %}" class="text-decoration-none">
+                                        <div class="admin-module-card">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-person-plus-fill fs-4 me-2" style="color: #28a745;"></i>
+                                                <h6 class="mb-0">Bulk Student Upload</h6>
+                                            </div>
+                                            <p class="small text-muted mb-0">Add or update student records in bulk through the student management workflow.</p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <a href="{% url 'import_companies' %}" class="text-decoration-none">
+                                        <div class="admin-module-card">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-building-add fs-4 me-2" style="color: #17a2b8;"></i>
+                                                <h6 class="mb-0">Bulk Company Upload</h6>
+                                            </div>
+                                            <p class="small text-muted mb-0">Register partner companies efficiently and keep recruiting data up to date.</p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <a href="{% url 'dashboard_analytics' %}" class="text-decoration-none">
+                                        <div class="admin-module-card">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-graph-up-arrow fs-4 me-2" style="color: #ffc107;"></i>
+                                                <h6 class="mb-0">Placement Analytics</h6>
+                                            </div>
+                                            <p class="small text-muted mb-0">Track placement trends, conversion rates, and branch-wise success metrics.</p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <a href="{% url 'dashboard_students' %}" class="text-decoration-none">
+                                        <div class="admin-module-card">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-funnel fs-4 me-2" style="color: #6f42c1;"></i>
+                                                <h6 class="mb-0">Search & Filters</h6>
+                                            </div>
+                                            <p class="small text-muted mb-0">Find students, companies, and placements quickly using the dashboard views.</p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <a href="{% url 'admin:index' %}" class="text-decoration-none">
+                                        <div class="admin-module-card">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-people-fill fs-4 me-2" style="color: #dc3545;"></i>
+                                                <h6 class="mb-0">User Management</h6>
+                                            </div>
+                                            <p class="small text-muted mb-0">Manage application users and access permissions from the admin console.</p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-lg-4 col-md-6">
+                                    <a href="{% url 'notifications' %}" class="text-decoration-none">
+                                        <div class="admin-module-card">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-bell-fill fs-4 me-2" style="color: #fd7e14;"></i>
+                                                <h6 class="mb-0">Notifications</h6>
+                                            </div>
+                                            <p class="small text-muted mb-0">Send and monitor updates for placements, interviews, and important admin actions.</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="table-card">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="bi bi-clock-history me-2" style="color: #0f3b57;"></i>
+                                    Recent Placements
+                                </h5>
+                                <a href="{% url 'dashboard_placements' %}" class="btn-primary-custom btn-sm">
+                                    View All
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead style="background: #f8f9fa;">
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Company</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for placement in recent_placements %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <img src="https://ui-avatars.com/api/?name={{ placement.student.name }}&background=0f3b57&color=fff&size=32" 
+                                                         class="rounded-circle" width="32" height="32">
+                                                    <span class="fw-semibold">{{ placement.student.name }}</span>
+                                                </div>
+                                            </td>
+                                            <td>{{ placement.company.name }}</td>
+                                            <td>{{ placement.company.role }}</td>
+                                            <td>
+                                                <span class="status-badge {{ placement.status|lower }}">
+                                                    {{ placement.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">
+                                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                                No placements yet
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="table-card">
+                            <h5 class="mb-3 fw-bold">
+                                <i class="bi bi-lightning-fill me-2" style="color: #ffc107;"></i>
+                                Quick Actions
+                            </h5>
+
+                            <a href="{% url 'add_student' %}" class="quick-action-btn" style="background: #0f3b57; color: white;">
+                                <i class="bi bi-person-plus-fill fs-5"></i>
+                                Add New Student
+                            </a>
+
+                            <a href="{% url 'add_company' %}" class="quick-action-btn" style="background: #28a745; color: white;">
+                                <i class="bi bi-building-add fs-5"></i>
+                                Add New Company
+                            </a>
+
+                            <a href="{% url 'dashboard_students' %}" class="quick-action-btn" style="background: #17a2b8; color: white;">
+                                <i class="bi bi-people fs-5"></i>
+                                View All Students
+                            </a>
+
+                            <a href="{% url 'placements' %}" class="quick-action-btn" style="background: #6c757d; color: white;">
+                                <i class="bi bi-briefcase fs-5"></i>
+                                Manage Placements
+                            </a>
+
+                            <hr>
+
+                            <a href="{% url 'resume:analyze_resume' %}" class="quick-action-btn" style="background: var(--rv-navy); color: white;">
+                                <i class="bi bi-file-earmark-person fs-5"></i>
+                                AI Resume Analyzer
+                            </a>
+
+                            <a href="{% url 'interview:interview_preparation' %}" class="quick-action-btn" style="background: #7c3aed; color: white;">
+                                <i class="bi bi-mic-fill fs-5"></i>
+                                Voice Mock Interview
+                            </a>
+
+                            <a href="{% url 'interview:practice_session' %}" class="quick-action-btn" style="background: #ffc107; color: #2c3e50;">
+                                <i class="bi bi-clipboard-check fs-5"></i>
+                                Aptitude Practice
+                            </a>
+
+                            <a href="{% url 'analytics:dashboard' %}" class="quick-action-btn" style="background: #CBA35C; color: white;">
+                                <i class="bi bi-graph-up-arrow fs-5"></i>
+                                Placement Analytics
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+    // Status Distribution Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Selected', 'Pending', 'Rejected'],
+            datasets: [{
+                data: [{{ status_counts.selected }}, {{ status_counts.pending }}, {{ status_counts.rejected }}],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: { size: 12 }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Branch Distribution Chart
+    const branchCtx = document.getElementById('branchChart').getContext('2d');
+    new Chart(branchCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for bp in branch_placements %}'{{ bp.student__branch }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Placements',
+                data: [{% for bp in branch_placements %}{{ bp.count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: '#0f3b57',
+                borderRadius: 8,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

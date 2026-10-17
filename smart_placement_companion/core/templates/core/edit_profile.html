@@ -1,0 +1,170 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Edit Profile | {{ student.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-section shadow-lg" style="border-radius: 12px; border-top: 6px solid var(--rv-navy) !important;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-black mb-0" style="color: var(--rv-navy); font-weight: 900;">Edit Professional Profile</h2>
+                    <a href="{% url 'student_profile' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-x-lg"></i> Cancel
+                    </a>
+                </div>
+                
+                <p class="text-muted mb-4">Update your profile information to better showcase your skills and experience to potential recruiters.</p>
+                
+                <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Profile Picture Preview -->
+                    <div class="row mb-5 align-items-center">
+                        <div class="col-md-3 text-center mb-3 mb-md-0">
+                            <div class="position-relative d-inline-block">
+                                <div class="rounded-circle overflow-hidden shadow-sm" style="width: 120px; height: 120px; border: 3px solid var(--rv-gold);">
+                                    {% if student.profile_picture %}
+                                        <img src="{{ student.profile_picture.url }}" id="image-preview" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                        <img src="https://ui-avatars.com/api/?name={{ student.name|urlencode }}&size=120&background=0b3c6d&color=fff" id="image-preview" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <label for="{{ form.profile_picture.id_for_label }}" class="form-label fw-bold">Profile Picture</label>
+                            {{ form.profile_picture }}
+                            <div class="form-text mt-2">Recommended: Square image, max 2MB (JPG or PNG).</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4">
+                        <!-- Full Name -->
+                        <div class="col-md-6">
+                            <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">Full Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">Email Address</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Headline -->
+                        <div class="col-12">
+                            <label for="{{ form.headline.id_for_label }}" class="form-label fw-bold">Headline</label>
+                            {{ form.headline }}
+                            <div class="form-text">A brief line about your professional identity (e.g., "Aspiring Cloud Architect | CSE Student").</div>
+                        </div>
+                        
+                        <!-- Branch & CGPA -->
+                        <div class="col-md-6">
+                            <label for="{{ form.branch.id_for_label }}" class="form-label fw-bold">Branch</label>
+                            {{ form.branch }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.cgpa.id_for_label }}" class="form-label fw-bold">Current CGPA</label>
+                            {{ form.cgpa }}
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div class="col-md-6">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label fw-bold">Phone Number</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.usn.id_for_label }}" class="form-label fw-bold">USN</label>
+                            {{ form.usn }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.linkedin.id_for_label }}" class="form-label fw-bold">LinkedIn</label>
+                            {{ form.linkedin }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.github.id_for_label }}" class="form-label fw-bold">GitHub</label>
+                            {{ form.github }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.leetcode.id_for_label }}" class="form-label fw-bold">LeetCode</label>
+                            {{ form.leetcode }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.hackerrank.id_for_label }}" class="form-label fw-bold">HackerRank</label>
+                            {{ form.hackerrank }}
+                        </div>
+                        
+                        <!-- Skills -->
+                        <div class="col-12">
+                            <label for="{{ form.skills.id_for_label }}" class="form-label fw-bold">Skills</label>
+                            {{ form.skills }}
+                            <div class="form-text">Enter skills separated by commas (e.g., Java, Python, React).</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.aptitude_score.id_for_label }}" class="form-label fw-bold">Aptitude Score</label>
+                            {{ form.aptitude_score }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.technical_score.id_for_label }}" class="form-label fw-bold">Technical Score</label>
+                            {{ form.technical_score }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.communication_score.id_for_label }}" class="form-label fw-bold">Communication Score</label>
+                            {{ form.communication_score }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.overall_readiness_score.id_for_label }}" class="form-label fw-bold">Overall Readiness Score</label>
+                            {{ form.overall_readiness_score }}
+                        </div>
+                        
+                        <!-- Bio / About -->
+                        <div class="col-12">
+                            <label for="{{ form.bio.id_for_label }}" class="form-label fw-bold">About / Bio</label>
+                            {{ form.bio }}
+                        </div>
+                        
+                        <!-- Resume -->
+                        <div class="col-12">
+                            <label for="{{ form.resume.id_for_label }}" class="form-label fw-bold">Update Resume</label>
+                            {{ form.resume }}
+                            <div class="form-text">PDF format preferred.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5 d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-navy px-5 py-2 fw-bold shadow-sm">
+                            Save Profile Changes <i class="bi bi-check2-all ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Live image preview
+    document.getElementById('{{ form.profile_picture.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('image-preview').setAttribute('src', event.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+<style>
+    .btn-navy { background-color: var(--rv-navy); color: white; border: 1px solid var(--rv-navy); }
+    .btn-navy:hover { background-color: var(--rv-dark-navy); color: var(--rv-gold); }
+</style>
+{% endblock %}

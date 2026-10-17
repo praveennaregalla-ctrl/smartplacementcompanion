@@ -1,0 +1,150 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Resume Analyzer - Smart Placement Assistant{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-4">
+    <div class="row justify-content-center" data-aos="zoom-in">
+        <div class="col-lg-10">
+            <div class="glass-section p-0 overflow-hidden shadow-lg border-0 rounded-4">
+                <div class="row g-0">
+                    <!-- Left Column: Upload Area -->
+                    <div class="col-md-6 p-5 bg-white">
+                        <div class="mb-4">
+                            <span class="badge bg-gold text-navy fw-black px-3 py-2 text-uppercase mb-3" style="letter-spacing: 1px;">AI Powered</span>
+                            <h2 class="fw-black text-navy" style="font-weight: 900;">Resume Analyzer</h2>
+                            <p class="text-muted">Optimize your professional profile for better placement opportunities.</p>
+                        </div>
+                        
+                        <form method="post" enctype="multipart/form-data" id="resumeForm">
+                            {% csrf_token %}
+                            {{ form.student_id }}
+                            
+                            <div class="upload-container mb-4 position-relative">
+                                <div id="drop-zone" class="drop-zone p-5 border-2 border-dashed rounded-4 text-center transition-all bg-light">
+                                    <div class="upload-icon mb-3">
+                                        <i class="bi bi-cloud-arrow-up display-3 text-navy"></i>
+                                    </div>
+                                    <h5 class="fw-bold text-navy mb-1">Drag & Drop Resume</h5>
+                                    <p class="small text-muted mb-3">or click to browse your files</p>
+                                    <div class="input-group d-none">
+                                        {{ form.resume_file }}
+                                    </div>
+                                    <button type="button" class="btn btn-navy-outline fw-bold px-4 rounded-pill" onclick="document.querySelector('input[type=file]').click()">
+                                        CHOOSE FILE
+                                    </button>
+                                    <div id="file-name" class="mt-3 fw-bold text-success small"></div>
+                                </div>
+                                <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle me-1"></i> Only PDF files are supported. Max 5MB.</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-navy w-100 py-3 fw-black shadow-sm rounded-3">
+                                <i class="bi bi-cpu-fill me-2"></i> INITIATE DEEP ANALYSIS
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right Column: Features/Info -->
+                    <div class="col-md-6 p-5 bg-navy text-white d-flex flex-column justify-content-center">
+                        <h4 class="fw-bold mb-4 text-gold"><i class="bi bi-stars me-2"></i> Why analyze your resume?</h4>
+                        
+                        <div class="feature-item mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="feature-icon-circle me-3 bg-white text-navy rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    <i class="bi bi-bullseye"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Targeted Scoring</h6>
+                                    <p class="small opacity-75 mb-0">Get a score based on 100+ industry-specific technical keywords and certifications.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="feature-item mb-4">
+                            <div class="d-flex align-items-start">
+                                <div class="feature-icon-circle me-3 bg-white text-navy rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    <i class="bi bi-layout-text-sidebar-reverse"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Skill Gap Identification</h6>
+                                    <p class="small opacity-75 mb-0">Discover which trending skills are missing from your profile to stay competitive.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="d-flex align-items-start">
+                                <div class="feature-icon-circle me-3 bg-white text-navy rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    <i class="bi bi-lightning-charge"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Actionable Suggestions</h6>
+                                    <p class="small opacity-75 mb-0">Receive specific tips on how to improve your wording, layout, and content.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .btn-navy:hover { background-color: #0c1a4d !important; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important; }
+    .btn-navy-outline { border: 2px solid var(--rv-navy); color: var(--rv-navy); background: transparent; }
+    .btn-navy-outline:hover { background: var(--rv-navy); color: white; }
+    .text-gold { color: var(--rv-gold) !important; }
+    .bg-gold { background-color: var(--rv-gold) !important; }
+    .fw-black { font-weight: 900 !important; }
+
+    .drop-zone {
+        border: 2px dashed #dee2e6;
+        cursor: pointer;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+        border-color: var(--rv-gold);
+        background-color: rgba(203, 163, 92, 0.05) !important;
+    }
+    
+    .transition-all { transition: all 0.3s ease; }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.querySelector('input[type=file]');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        ['dragleave', 'drop'].forEach(event => {
+            dropZone.addEventListener(event, () => dropZone.classList.remove('drag-over'));
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileName);
+
+        function updateFileName() {
+            if (fileInput.files.length) {
+                fileNameDisplay.innerHTML = `<i class="bi bi-file-earmark-check me-1"></i> ${fileInput.files[0].name}`;
+            }
+        }
+    });
+</script>
+{% endblock %}

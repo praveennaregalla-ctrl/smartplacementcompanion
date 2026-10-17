@@ -1,0 +1,237 @@
+/* ============================================
+   Smart Placement Drive - Custom Admin Styles
+   Color Scheme: #0f3b57 (Dark Blue), #ff6b3d (Orange)
+   ============================================ */
+
+/* ===== BRAND HEADER ===== */
+.brand-link {
+    background-color: #0f3b57 !important;
+    border-bottom: 3px solid #ff6b3d !important;
+}
+
+.brand-link .brand-text {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+}
+
+/* ===== NAVBAR ===== */
+.navbar-white {
+    background-color: #0f3b57 !important;
+    border-bottom: 3px solid #ff6b3d !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: #ff6b3d !important;
+}
+
+/* ===== SIDEBAR ===== */
+.main-sidebar {
+    background-color: #0f3b57 !important;
+}
+
+.nav-sidebar .nav-item > .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.nav-sidebar .nav-item > .nav-link:hover {
+    background-color: rgba(255, 107, 61, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.nav-sidebar .nav-item > .nav-link.active {
+    background-color: #ff6b3d !important;
+    color: #ffffff !important;
+}
+
+.nav-sidebar .nav-treeview > .nav-item > .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.nav-sidebar .nav-treeview > .nav-item > .nav-link:hover {
+    color: #ff6b3d !important;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    background-color: #ff6b3d !important;
+    border-color: #ff6b3d !important;
+}
+
+.btn-primary:hover {
+    background-color: #e65a2e !important;
+    border-color: #e65a2e !important;
+}
+
+.btn-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+/* ===== LINKS ===== */
+a {
+    color: #0f3b57;
+}
+
+a:hover {
+    color: #ff6b3d;
+}
+
+/* ===== CONTENT HEADER ===== */
+.content-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #ff6b3d;
+    padding: 20px;
+}
+
+.content-header h1 {
+    color: #0f3b57;
+    font-weight: 600;
+}
+
+/* ===== CARDS ===== */
+.card {
+    border-radius: 0 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-header {
+    background-color: #0f3b57 !important;
+    color: #ffffff !important;
+    border-radius: 0 !important;
+}
+
+.card-header .card-title {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* ===== TABLE ===== */
+.table thead th {
+    background-color: #0f3b57;
+    color: #ffffff;
+    border: none;
+    font-weight: 500;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(255, 107, 61, 0.05);
+}
+
+/* ===== FORM ELEMENTS ===== */
+.form-control:focus {
+    border-color: #ff6b3d;
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 61, 0.25);
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #ff6b3d !important;
+}
+
+/* ===== PAGINATION ===== */
+.page-item.active .page-link {
+    background-color: #ff6b3d !important;
+    border-color: #ff6b3d !important;
+}
+
+.page-link {
+    color: #0f3b57;
+}
+
+.page-link:hover {
+    color: #ff6b3d;
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb-item a {
+    color: #0f3b57;
+}
+
+.breadcrumb-item a:hover {
+    color: #ff6b3d;
+}
+
+.breadcrumb-item.active {
+    color: #ff6b3d;
+}
+
+/* ===== ALERTS ===== */
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: #28a745;
+    color: #155724;
+}
+
+.alert-info {
+    background-color: rgba(15, 59, 87, 0.1);
+    border-color: #0f3b57;
+    color: #0f3b57;
+}
+
+/* ===== DASHBOARD WIDGETS ===== */
+.small-box {
+    border-radius: 0 !important;
+}
+
+.small-box.bg-info {
+    background-color: #0f3b57 !important;
+}
+
+.small-box.bg-success {
+    background-color: #28a745 !important;
+}
+
+.small-box.bg-warning {
+    background-color: #ff6b3d !important;
+}
+
+.small-box.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* ===== LOGIN PAGE ===== */
+.login-page {
+    background-color: #f4f6fb;
+}
+
+.login-box {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.login-card-body {
+    border-radius: 0 !important;
+}
+
+.login-logo a {
+    color: #0f3b57;
+    font-weight: 700;
+}
+
+/* ===== FOOTER ===== */
+.main-footer {
+    background-color: #0f3b57;
+    color: rgba(255, 255, 255, 0.8);
+    border-top: 3px solid #ff6b3d;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #0f3b57;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff6b3d;
+}

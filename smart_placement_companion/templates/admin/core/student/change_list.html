@@ -1,0 +1,296 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Hide default result list table */
+    #result_list {
+        display: none;
+    }
+    
+    /* Card Grid Layout */
+    .student-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+        padding: 20px 0;
+    }
+    
+    /* Student Card */
+    .student-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid #e8e8e8;
+    }
+    
+    .student-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Card Header with Avatar */
+    .student-card-header {
+        background: linear-gradient(135deg, #0f3b57 0%, #1a5276 100%);
+        padding: 25px 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .student-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        margin-bottom: 15px;
+    }
+    
+    .student-name {
+        color: white;
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+        text-decoration: none;
+        display: block;
+    }
+    
+    .student-name:hover {
+        color: #ff6b3d;
+    }
+    
+    .student-email {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 13px;
+        margin-top: 5px;
+    }
+    
+    /* Card Body */
+    .student-card-body {
+        padding: 20px;
+    }
+    
+    .student-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .student-info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        color: #666;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Branch Badge */
+    .branch-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        background: #0f3b57;
+        color: white;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    /* CGPA Badge */
+    .cgpa-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+    
+    .cgpa-high {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+    
+    .cgpa-medium {
+        background: rgba(255, 193, 7, 0.1);
+        color: #856404;
+    }
+    
+    .cgpa-low {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    /* Resume Button */
+    .resume-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: #ff6b3d;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .resume-btn:hover {
+        background: #e65a2e;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .no-resume {
+        color: #999;
+        font-size: 13px;
+        font-style: italic;
+    }
+    
+    /* Card Actions */
+    .student-card-actions {
+        display: flex;
+        padding: 0 20px 20px;
+        gap: 10px;
+    }
+    
+    .action-btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .action-btn-edit {
+        background: rgba(255, 193, 7, 0.1);
+        color: #856404;
+    }
+    
+    .action-btn-edit:hover {
+        background: #ffc107;
+        color: #212529;
+        text-decoration: none;
+    }
+    
+    .action-btn-delete {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .action-btn-delete:hover {
+        background: #dc3545;
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* Pagination styling */
+    .pagination {
+        margin-top: 30px;
+        justify-content: center;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .student-cards-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+    }
+    
+    /* Search and filters */
+    #changelist-search {
+        margin-bottom: 20px;
+    }
+    
+    .changelist-filter {
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block result_list %}
+<!-- Custom Card Grid Layout -->
+<div class="student-cards-grid">
+    {% for student in cl.result_list %}
+    <div class="student-card">
+        <!-- Card Header with Avatar -->
+        <div class="student-card-header">
+            <img src="https://ui-avatars.com/api/?name={{ student.name|urlencode }}&background=random&color=fff&size=128" 
+                 alt="{{ student.name }}" 
+                 class="student-avatar">
+            <a href="{% url 'admin:core_student_change' student.pk %}" class="student-name">
+                {{ student.name }}
+            </a>
+            <div class="student-email">
+                <i class="fas fa-envelope mr-1"></i> {{ student.email }}
+            </div>
+        </div>
+        
+        <!-- Card Body -->
+        <div class="student-card-body">
+            <div class="student-info-row">
+                <span class="info-label">Branch</span>
+                <span class="branch-badge">{{ student.branch }}</span>
+            </div>
+            
+            <div class="student-info-row">
+                <span class="info-label">CGPA</span>
+                <span class="cgpa-badge {% if student.cgpa >= 8.0 %}cgpa-high{% elif student.cgpa >= 6.0 %}cgpa-medium{% else %}cgpa-low{% endif %}">
+                    {{ student.cgpa }}
+                </span>
+            </div>
+            
+            <div class="student-info-row">
+                <span class="info-label">Resume</span>
+                {% if student.resume %}
+                <a href="{{ student.resume.url }}" class="resume-btn" target="_blank">
+                    <i class="fas fa-file-pdf"></i> View Resume
+                </a>
+                {% else %}
+                <span class="no-resume">
+                    <i class="fas fa-times-circle"></i> No Resume
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Card Actions -->
+        <div class="student-card-actions">
+            <a href="{% url 'admin:core_student_change' student.pk %}" class="action-btn action-btn-edit">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a href="{% url 'admin:core_student_delete' student.pk %}" class="action-btn action-btn-delete" 
+               onclick="return confirm('Are you sure you want to delete {{ student.name }}?');">
+                <i class="fas fa-trash"></i> Delete
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No students found.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if cl.pagination_required %}
+<div class="pagination">
+    {{ cl.pagination }}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Mock Interview Results{% endblock %}
+
+{% block content %}
+<div class="glass-section">
+    <div class="section-header">
+        <i class="bi bi-award-fill me-2"></i> Performance Evaluation
+    </div>
+
+    <div class="row">
+        <!-- Score Circle -->
+        <div class="col-md-4 text-center mb-4">
+            <div class="card h-100 border-0 shadow-sm p-4 justify-content-center">
+                <h5 class="fw-bold mb-4">Answer Score</h5>
+                <div class="position-relative d-inline-block mx-auto mb-3">
+                    <svg width="150" height="150">
+                        <circle cx="75" cy="75" r="70" fill="transparent" stroke="#f0f0f0" stroke-width="10"></circle>
+                        <circle cx="75" cy="75" r="70" fill="transparent" stroke="var(--rv-navy)" stroke-width="10" 
+                                stroke-dasharray="440" stroke-dashoffset="{{ 440|add:score|stringformat:"i" }}"></circle>
+                    </svg>
+                    <div class="position-absolute top-50 start-50 translate-middle">
+                        <span class="display-5 fw-bold text-navy">{{ score }}%</span>
+                    </div>
+                </div>
+                <p class="text-muted">Keyword Match Accuracy</p>
+                <div class="mt-4">
+                    {% if score >= 80 %}
+                        <div class="alert alert-success py-2">Exceptional Answer!</div>
+                    {% elif score >= 50 %}
+                        <div class="alert alert-info py-2">Good, but could be more specific.</div>
+                    {% else %}
+                        <div class="alert alert-danger py-2">Need to include more key points.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Breakdown -->
+        <div class="col-md-8">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="fw-bold mb-0 text-navy"><i class="bi bi-search me-2 text-warning"></i> Transparency Report</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary mb-2">Question:</h6>
+                        <p class="lead fw-bold">{{ question.question_text }}</p>
+                    </div>
+
+                    <div class="alert alert-light border mb-4">
+                        <h6 class="fw-bold text-navy mb-2">AI Interview Coach Feedback</h6>
+                        <p class="mb-0">{{ feedback }}</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h6 class="fw-bold text-navy mb-3"><i class="bi bi-check-all me-2"></i> Expected Concepts</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for key in expected %}
+                                    <span class="badge {% if key in matched %}bg-success{% else %}bg-secondary-subtle text-secondary border{% endif %} px-3 py-2">
+                                        {{ key }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted mt-2 d-block">* Green indicates the concept was covered in your answer.</small>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h6 class="fw-bold text-navy mb-3"><i class="bi bi-person-fill me-2"></i> Covered in Your Answer</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for key in matched %}
+                                    <span class="badge bg-primary px-3 py-2">{{ key }}</span>
+                                {% empty %}
+                                    <span class="text-muted italic">No key concepts matched.</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if strengths %}
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-success mb-2"><i class="bi bi-star-fill me-2"></i> Strengths</h6>
+                        <ul class="mb-0 ps-3">
+                            {% for item in strengths %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% if improvements %}
+                    <div class="bg-light p-3 rounded border">
+                        <h6 class="fw-bold text-warning mb-2"><i class="bi bi-lightbulb-fill me-2"></i> Improvement Points</h6>
+                        <ul class="mb-0 ps-3">
+                            {% for item in improvements %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="bg-light p-3 rounded border mt-4">
+                        <h6 class="fw-bold text-navy mb-2">Your Full Answer:</h6>
+                        <p class="small text-muted mb-0 italic">"{{ user_answer }}"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 text-center">
+        <a href="{% url 'interview:mock_interview' %}" class="btn btn-navy me-2"><i class="bi bi-arrow-repeat me-2"></i> Try Another Question</a>
+        <a href="{% url 'interview:predictor' %}" class="btn btn-outline-navy">Question Bank <i class="bi bi-book ms-2"></i></a>
+    </div>
+</div>
+
+<style>
+    .text-navy { color: var(--rv-navy); }
+    .btn-navy { background-color: var(--rv-navy); color: white; }
+    .btn-navy:hover { background-color: var(--rv-dark-navy); color: #CBA35C; }
+    .btn-outline-navy { border-color: var(--rv-navy); color: var(--rv-navy); }
+    .btn-outline-navy:hover { background-color: var(--rv-navy); color: white; }
+    .italic { font-style: italic; }
+</style>
+{% endblock %}

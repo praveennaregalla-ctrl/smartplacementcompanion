@@ -1,0 +1,157 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Update Placement Status{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1>Update Placement Status</h1>
+    <p>Update placement status for {{ placement.student.name }} - {{ placement.company.name }}</p>
+</div>
+
+<!-- Form -->
+<div class="form-container glass-section">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-circle-fill"></i> Please correct the errors below.
+        </div>
+        {% endif %}
+        
+        <!-- Student & Company Info -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="p-3" style="background: #f8f9fa; border-left: 4px solid #003366;">
+                    <label class="text-muted small text-uppercase fw-bold">Student</label>
+                    <div class="fw-bold" style="color: #003366; font-size: 1.1rem;">
+                        {{ placement.student.name }}
+                    </div>
+                    <small class="text-muted">{{ placement.student.branch }} | CGPA: {{ placement.student.cgpa }}</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3" style="background: #f8f9fa; border-left: 4px solid #003366;">
+                    <label class="text-muted small text-uppercase fw-bold">Company</label>
+                    <div class="fw-bold" style="color: #003366; font-size: 1.1rem;">
+                        {{ placement.company.name }}
+                    </div>
+                    <small class="text-muted">{{ placement.company.role }} | ₹{{ placement.company.package }} LPA</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Selection -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-12">
+                <label for="{{ form.status.id_for_label }}" class="form-label fw-bold">
+                    Placement Status <span class="text-danger">*</span>
+                </label>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <div class="text-danger small mt-1">{{ form.status.errors.0 }}</div>
+                {% endif %}
+                <div class="mt-2">
+                    <span class="badge bg-success bg-opacity-10 text-success me-2"><i class="bi bi-check-circle-fill"></i> Selected</span>
+                    <span class="badge bg-warning bg-opacity-10 text-warning me-2"><i class="bi bi-hourglass-split"></i> Pending</span>
+                    <span class="badge bg-danger bg-opacity-10 text-danger"><i class="bi bi-x-circle-fill"></i> Rejected</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label for="{{ form.interview_round.id_for_label }}" class="form-label fw-bold">
+                    Interview Round
+                </label>
+                {{ form.interview_round }}
+                {% if form.interview_round.errors %}
+                <div class="text-danger small mt-1">{{ form.interview_round.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-3">
+                <label for="{{ form.interview_date.id_for_label }}" class="form-label fw-bold">
+                    Interview Date
+                </label>
+                {{ form.interview_date }}
+                {% if form.interview_date.errors %}
+                <div class="text-danger small mt-1">{{ form.interview_date.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-3">
+                <label for="{{ form.interview_time.id_for_label }}" class="form-label fw-bold">
+                    Interview Time
+                </label>
+                {{ form.interview_time }}
+                {% if form.interview_time.errors %}
+                <div class="text-danger small mt-1">{{ form.interview_time.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label for="{{ form.feedback.id_for_label }}" class="form-label fw-bold">
+                    Interview Feedback
+                </label>
+                {{ form.feedback }}
+                {% if form.feedback.errors %}
+                <div class="text-danger small mt-1">{{ form.feedback.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.hr_remarks.id_for_label }}" class="form-label fw-bold">
+                    HR Remarks
+                </label>
+                {{ form.hr_remarks }}
+                {% if form.hr_remarks.errors %}
+                <div class="text-danger small mt-1">{{ form.hr_remarks.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="{{ form.offer_letter.id_for_label }}" class="form-label fw-bold">
+                Offer Letter Upload
+            </label>
+            {{ form.offer_letter }}
+            {% if form.offer_letter.errors %}
+            <div class="text-danger small mt-1">{{ form.offer_letter.errors.0 }}</div>
+            {% endif %}
+            <small class="text-muted d-block mt-1">
+                Upload the offer letter as PDF or Word document.
+            </small>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="mb-4">
+            <label for="{{ form.notes.id_for_label }}" class="form-label fw-bold">
+                Placement Notes
+            </label>
+            {{ form.notes }}
+            {% if form.notes.errors %}
+            <div class="text-danger small mt-1">{{ form.notes.errors.0 }}</div>
+            {% endif %}
+            <small class="text-muted d-block mt-1">
+                Optional notes regarding this placement decision.
+            </small>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="row g-3">
+            <div class="col-md-6">
+                <a href="{% url 'company_eligible' placement.company.id %}" class="btn btn-secondary w-100">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary-custom w-100">
+                    <i class="bi bi-check-circle"></i> Update Status
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

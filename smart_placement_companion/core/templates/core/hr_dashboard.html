@@ -1,0 +1,109 @@
+{% extends 'core/base.html' %}
+
+{% block title %}HR Dashboard - {{ company.name }}{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <span class="badge bg-gold text-navy fw-bold text-uppercase letter-spacing-1 mb-2">HR Portal</span>
+            <h2 class="fw-black text-navy mb-1">{{ company.name }} HR Dashboard</h2>
+            <p class="text-muted">Manage job openings, eligible students, interview schedules, and selection status.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge bg-navy text-white py-2 px-3">Eligible Students: {{ eligible_students_count }}</span>
+            <span class="badge bg-success text-white py-2 px-3">Upcoming Interviews: {{ upcoming_interviews|length }}</span>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="p-4 rounded-4 bg-light border">
+                <h6 class="fw-bold text-navy mb-3">Interview Status</h6>
+                <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Pending</span>
+                        <span class="badge bg-warning text-dark">{{ status_counts.PENDING|default:0 }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Shortlisted</span>
+                        <span class="badge bg-info text-white">{{ status_counts.SHORTLISTED|default:0 }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Selected</span>
+                        <span class="badge bg-success text-white">{{ status_counts.SELECTED|default:0 }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Rejected</span>
+                        <span class="badge bg-danger text-white">{{ status_counts.REJECTED|default:0 }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="p-4 rounded-4 bg-white border shadow-sm">
+                <h6 class="fw-bold text-navy mb-4">Upcoming Interviews</h6>
+                {% if upcoming_interviews %}
+                    <div class="list-group">
+                        {% for placement in upcoming_interviews %}
+                        <div class="list-group-item rounded-4 mb-3 border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ placement.student.name }}</h6>
+                                    <small class="text-muted">{{ placement.student.branch }} | {{ placement.student.cgpa }} CGPA</small>
+                                </div>
+                                <span class="text-navy fw-bold">{{ placement.interview_date }} {{ placement.interview_time }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-muted">{{ placement.interview_round|default:'Interview' }}</span>
+                                <a href="{% url 'update_placement' placement.id %}" class="btn btn-sm btn-outline-navy">Update</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No interviews have been scheduled yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-section p-4 bg-white border shadow-sm rounded-4">
+        <h5 class="fw-black text-navy mb-4">All Eligible Students</h5>
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Student</th>
+                        <th>Branch</th>
+                        <th>CGPA</th>
+                        <th>Status</th>
+                        <th>Interview</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for placement in placements %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ placement.student.name }}</td>
+                        <td>{{ placement.student.branch }}</td>
+                        <td>{{ placement.student.cgpa }}</td>
+                        <td>{{ placement.status|title }}</td>
+                        <td>{{ placement.interview_date|default:'TBD' }} {{ placement.interview_time|default:'' }}</td>
+                        <td>
+                            <a href="{% url 'update_placement' placement.id %}" class="btn btn-sm btn-outline-primary">Manage</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No eligible students have been identified for this company yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="glass-section">
+                <div class="text-center mb-4">
+                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                    <h4 class="text-danger mb-3">Confirm Delete</h4>
+                </div>
+                <p class="lead">
+                    Are you sure you want to delete the student 
+                    <strong>{{ student.name }}</strong>?
+                </p>
+                <p class="text-muted">
+                    This action cannot be undone. All data associated with this student 
+                    (including placements) will be permanently removed.
+                </p>
+                
+                <div class="d-flex gap-2 mt-4 justify-content-center">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-2"></i>Yes, Delete
+                        </button>
+                    </form>
+                    <a href="{% url 'students' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-lg me-2"></i>Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

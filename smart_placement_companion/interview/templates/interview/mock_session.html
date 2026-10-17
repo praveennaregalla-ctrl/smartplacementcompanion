@@ -1,0 +1,285 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Mock Interview Session{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-4">
+    {% if question %}
+    <div class="row g-4" data-aos="fade-up">
+        <!-- Sidebar: Timer & Status -->
+        <div class="col-lg-3">
+            <div class="glass-section h-100 p-4 bg-navy text-white text-center rounded-4 border-0 shadow-lg position-relative overflow-hidden">
+                <!-- Decorative element -->
+                <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" style="background: radial-gradient(circle at 10% 20%, var(--rv-gold) 0%, transparent 50%);"></div>
+                
+                <div class="position-relative z-index-1">
+                    <h6 class="fw-bold text-gold mb-4 text-uppercase" style="letter-spacing: 2px;">Session Timer</h6>
+                    
+                    <div class="timer-container mb-4 position-relative d-inline-block">
+                        <svg viewBox="0 0 100 100" style="width: 150px; height: 150px;">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"></circle>
+                            <circle id="timer-path" cx="50" cy="50" r="45" fill="none" stroke="var(--rv-gold)" 
+                                    stroke-width="6" stroke-dasharray="100, 100" 
+                                    transform="rotate(-90 50 50)" stroke-linecap="round" pathLength="100"></circle>
+                        </svg>
+                        <div class="timer-text position-absolute top-50 start-50 translate-middle">
+                            <span class="display-5 fw-black text-white" id="timer">02:00</span>
+                        </div>
+                    </div>
+
+                    <div class="status-indicator p-3 rounded-4 bg-white-10 border border-white-10 mb-4">
+                        <div class="small opacity-50 mb-1">CURRENT ROLE</div>
+                        <div class="fw-bold text-gold">{{ role|title }}</div>
+                    </div>
+
+                    <form method="get" class="mb-4">
+                        <label class="form-label small text-uppercase text-gold mb-2" for="category">Round</label>
+                        <select name="role" class="form-select form-select-sm mb-2" aria-label="Select role">
+                            {% for value, label in roles %}
+                                <option value="{{ value }}" {% if role == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="category" class="form-select form-select-sm" aria-label="Select interview round">
+                            {% for value, label in categories %}
+                                <option value="{{ value }}" {% if category == value %}selected{% endif %}>{{ label }} Round</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-gold btn-sm fw-bold mt-2 w-100 rounded-pill">START SELECTED ROUND</button>
+                    </form>
+
+                    <div class="tip-box p-3 rounded-4 bg-gold text-navy text-start shadow-sm">
+                        <h6 class="fw-black mb-1 small"><i class="bi bi-lightbulb-fill me-2"></i> PRO TIP</h6>
+                        <p class="mb-0" style="font-size: 0.75rem; line-height: 1.4;">Answer aloud using the microphone, or type your response and submit it for evaluation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: Question & Answer Area -->
+        <div class="col-lg-9">
+            <div class="glass-section h-100 p-0 overflow-hidden bg-white border-0 shadow-lg rounded-4">
+                <div class="p-4 bg-light border-bottom d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-navy text-white px-3 py-2 rounded-pill me-3 shadow-sm">QUESTION 01</span>
+                        <h5 class="fw-black text-navy mb-0" style="font-weight: 900;">{{ category|title }} Assessment</h5>
+                    </div>
+                    <span class="badge bg-warning text-navy fw-bold px-3 py-2 rounded-pill">{{ question.get_category_display }}</span>
+                </div>
+
+                <div class="p-5">
+                    <div class="question-header mb-5">
+                        <h2 class="fw-black text-navy mb-3" style="font-weight: 900; line-height: 1.2;">{{ question.question_text }}</h2>
+                        <div class="divider bg-gold" style="height: 4px; width: 60px; border-radius: 2px;"></div>
+                    </div>
+
+                    <form method="post" id="mockForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="question_id" value="{{ question.id }}">
+                        
+                        <div class="form-group mb-4">
+                            <label class="form-label fw-bold text-navy mb-3">Compose Your Response</label>
+                            <div class="voice-tools mb-3 d-flex flex-wrap gap-2">
+                                <button type="button" id="readQuestionBtn" class="btn btn-outline-navy btn-sm fw-bold rounded-pill">
+                                    <i class="bi bi-volume-up me-2"></i> Read Question Aloud
+                                </button>
+                                <button type="button" id="voiceAnswerBtn" class="btn btn-outline-success btn-sm fw-bold rounded-pill">
+                                    <i class="bi bi-mic-fill me-2"></i> Start Voice Answer
+                                </button>
+                                <button type="button" id="stopVoiceBtn" class="btn btn-outline-secondary btn-sm fw-bold rounded-pill d-none">
+                                    <i class="bi bi-stop-circle me-2"></i> Stop
+                                </button>
+                            </div>
+                            <div id="voiceStatus" class="small text-muted mb-2">Voice assistant is ready.</div>
+                            <div class="textarea-wrapper position-relative">
+                                <textarea name="answer" id="answerInput" class="form-control rounded-4 p-4 shadow-sm border-2 transition-all" 
+                                          rows="10" placeholder="Type your detailed answer here... (e.g. 'In my experience, the best approach is to...')" 
+                                          required style="font-size: 1.1rem; line-height: 1.6;"></textarea>
+                                <div class="word-count position-absolute bottom-0 end-0 p-3 text-muted small">
+                                    <span id="charCount">0</span> characters
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center bg-light p-4 rounded-4">
+                            <div class="text-muted small d-flex align-items-center">
+                                <i class="bi bi-shield-check-fill text-success fs-4 me-3"></i>
+                                <span>Your answer will be evaluated by our AI engine for keyword relevance and structural clarity.</span>
+                            </div>
+                            <button type="submit" class="btn btn-navy px-5 py-3 fw-black rounded-3 shadow-sm" id="submitBtn">
+                                SUBMIT RESPONSE <i class="bi bi-arrow-right-short ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="glass-section p-5 text-center rounded-4 border-0 shadow-lg">
+        <div class="mb-4">
+            <i class="bi bi-journal-x display-1 text-muted opacity-25"></i>
+        </div>
+        <h3 class="fw-black text-navy">No Questions Found</h3>
+        <p class="text-muted mb-4">Please contact the administrator to seed the interview question database for your role.</p>
+        <a href="{% url 'home' %}" class="btn btn-navy px-4 fw-bold">BACK TO DASHBOARD</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-navy { color: var(--rv-navy) !important; }
+    .text-gold { color: var(--rv-gold) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .btn-navy:hover { background-color: #0c1a4d !important; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important; }
+    .btn-outline-navy { border-color: var(--rv-navy); color: var(--rv-navy); }
+    .btn-outline-navy:hover { background-color: var(--rv-navy); color: white; }
+    .fw-black { font-weight: 900 !important; }
+    .bg-white-10 { background: rgba(255,255,255,0.05); }
+    .border-white-10 { border: 1px solid rgba(255,255,255,0.1); }
+    .z-index-1 { z-index: 1; }
+
+    .textarea-wrapper textarea:focus {
+        border-color: var(--rv-gold) !important;
+        box-shadow: 0 0 0 0.25rem rgba(203, 163, 92, 0.1) !important;
+        outline: none;
+    }
+
+    .transition-all { transition: all 0.3s ease; }
+
+    #timer-path {
+        transition: stroke-dasharray 1s linear;
+    }
+
+    #voiceStatus {
+        min-height: 20px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let timeLeft = 120; // 2 minutes
+    const totalTime = 120;
+    const timerDisplay = document.getElementById('timer');
+    const timerPath = document.getElementById('timer-path');
+    const mockForm = document.getElementById('mockForm');
+    const answerInput = document.getElementById('answerInput');
+    const charCountDisplay = document.getElementById('charCount');
+    const readQuestionBtn = document.getElementById('readQuestionBtn');
+    const voiceAnswerBtn = document.getElementById('voiceAnswerBtn');
+    const stopVoiceBtn = document.getElementById('stopVoiceBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const questionText = "{{ question.question_text|escapejs }}";
+
+    answerInput.addEventListener('input', function() {
+        charCountDisplay.textContent = this.value.length;
+    });
+
+    function speakText(text) {
+        if (!('speechSynthesis' in window)) {
+            voiceStatus.textContent = 'Voice playback is not supported in this browser.';
+            return;
+        }
+
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.onstart = function() {
+            voiceStatus.textContent = 'Reading the question aloud...';
+        };
+        utterance.onend = function() {
+            voiceStatus.textContent = 'Voice assistant is ready.';
+        };
+        window.speechSynthesis.speak(utterance);
+    }
+
+    readQuestionBtn.addEventListener('click', function() {
+        speakText(questionText);
+    });
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let isListening = false;
+
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+
+        recognition.onstart = function() {
+            isListening = true;
+            voiceStatus.textContent = 'Listening for your answer...';
+            voiceAnswerBtn.innerHTML = '<i class="bi bi-mic-mute-fill me-2"></i> Listening...';
+            stopVoiceBtn.classList.remove('d-none');
+        };
+
+        recognition.onresult = function(event) {
+            let transcript = '';
+            for (let i = 0; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+            }
+            answerInput.value = transcript.trim();
+            charCountDisplay.textContent = answerInput.value.length;
+        };
+
+        recognition.onerror = function(event) {
+            voiceStatus.textContent = 'Unable to capture voice input. Please try again or type your answer.';
+        };
+
+        recognition.onend = function() {
+            if (isListening) {
+                isListening = false;
+                voiceAnswerBtn.innerHTML = '<i class="bi bi-mic-fill me-2"></i> Start Voice Answer';
+                stopVoiceBtn.classList.add('d-none');
+                voiceStatus.textContent = 'Voice answer captured. You can continue editing or submit.';
+            }
+        };
+
+        voiceAnswerBtn.addEventListener('click', function() {
+            if (!isListening) {
+                answerInput.focus();
+                recognition.start();
+            }
+        });
+
+        stopVoiceBtn.addEventListener('click', function() {
+            if (isListening) {
+                recognition.stop();
+                isListening = false;
+            }
+        });
+    } else {
+        voiceAnswerBtn.disabled = true;
+        voiceAnswerBtn.innerHTML = '<i class="bi bi-mic-mute-fill me-2"></i> Voice Not Supported';
+        voiceStatus.textContent = 'This browser does not support voice recognition. Please type your answer.';
+    }
+
+    const timer = setInterval(function() {
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            alert("Time's up! Your response is being submitted automatically.");
+            mockForm.submit();
+        } else {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            timerDisplay.textContent = 
+                (minutes < 10 ? '0' : '') + minutes + ':' + 
+                (seconds < 10 ? '0' : '') + seconds;
+            
+            const progress = (timeLeft / totalTime) * 100;
+            timerPath.style.strokeDasharray = `${progress}, 100`;
+            
+            if (timeLeft < 30) {
+                timerPath.style.stroke = '#dc3545';
+                timerDisplay.classList.add('text-danger');
+            }
+        }
+        timeLeft--;
+    }, 1000);
+});
+</script>
+
+{% endblock %}

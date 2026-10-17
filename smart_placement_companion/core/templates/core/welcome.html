@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Welcome - Smart Placement Companion{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-10 text-center mb-5">
+        <h1 class="display-4 fw-bold" style="color: var(--rv-navy); text-transform: uppercase; letter-spacing: 2px;">
+            Welcome to Smart Placement Companion
+        </h1>
+        <p class="lead text-muted">A comprehensive portal for students and administration to manage career opportunities.</p>
+        <div style="width: 100px; height: 5px; background: var(--rv-gold); margin: 20px auto;"></div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-section text-center h-100 mb-4 p-5" style="transition: transform 0.3s ease;">
+            <div class="icon-circle">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <h3 class="fw-bold mb-4" style="color: var(--rv-navy);">STUDENT ACCESS</h3>
+            <p class="text-muted mb-4">Access your personal placement profile, analyze your resume, and explore career opportunities with top companies.</p>
+            <a href="{% url 'student_login' %}" class="btn btn-lg w-100 fw-bold" style="background-color: var(--rv-navy); color: white; border-radius: 4px;">
+                STUDENT LOGIN <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-section text-center h-100 mb-4 p-5" style="transition: transform 0.3s ease;">
+            <div class="icon-circle" style="background: var(--rv-navy); color: var(--rv-gold);">
+                <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <h3 class="fw-bold mb-4" style="color: var(--rv-navy);">ADMINISTRATION</h3>
+            <p class="text-muted mb-4">Secure access for administrative tasks, student management, company coordination, and placement analytics.</p>
+            <a href="{% url 'login' %}" class="btn btn-lg w-100 fw-bold" style="background-color: var(--rv-gold); color: white; border-radius: 4px;">
+                ADMIN LOGIN <i class="bi bi-shield-lock ms-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-section text-center h-100 mb-4 p-5" style="transition: transform 0.3s ease;">
+            <div class="icon-circle" style="background: #17a2b8; color: white;">
+                <i class="bi bi-building"></i>
+            </div>
+            <h3 class="fw-bold mb-4" style="color: var(--rv-navy);">COMPANY / HR</h3>
+            <p class="text-muted mb-4">HR users can login to manage eligible students, schedule interviews and update application status.</p>
+            <a href="{% url 'hr_login' %}" class="btn btn-lg w-100 fw-bold" style="background-color: #17a2b8; color: white; border-radius: 4px;">
+                HR LOGIN <i class="bi bi-person-badge ms-2"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-section:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}

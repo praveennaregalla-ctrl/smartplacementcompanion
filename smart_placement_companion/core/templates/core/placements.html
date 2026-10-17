@@ -1,0 +1,125 @@
+{% extends "core/base.html" %}
+
+{% block title %}Placements - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-4">
+    <div class="d-flex justify-content-between align-items-end mb-5" data-aos="fade-down">
+        <div>
+            <h2 class="fw-black text-navy mb-1" style="font-weight: 900;">Placement Records</h2>
+            <p class="text-muted">Tracking career success and recruitment outcomes across all departments.</p>
+        </div>
+    </div>
+
+    <!-- Stats Ribbon -->
+    <div class="row g-4 mb-5" data-aos="fade-up">
+        <div class="col-md-4">
+            <div class="glass-section p-4 text-center border-0 shadow-sm bg-white rounded-4 border-start border-5 border-success">
+                <div class="small fw-bold text-success text-uppercase mb-1" style="letter-spacing: 1px;">Success Stories</div>
+                <div class="h2 fw-black text-navy mb-0">{{ selected_count }}</div>
+                <div class="small text-muted mt-1">Offers Secured</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-section p-4 text-center border-0 shadow-sm bg-white rounded-4 border-start border-5 border-warning">
+                <div class="small fw-bold text-warning text-uppercase mb-1" style="letter-spacing: 1px;">In Progress</div>
+                <div class="h2 fw-black text-navy mb-0">{{ pending_count }}</div>
+                <div class="small text-muted mt-1">Pending Evaluation</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-section p-4 text-center border-0 shadow-sm bg-white rounded-4 border-start border-5 border-danger">
+                <div class="small fw-bold text-danger text-uppercase mb-1" style="letter-spacing: 1px;">Not Selected</div>
+                <div class="h2 fw-black text-navy mb-0">{{ rejected_count }}</div>
+                <div class="small text-muted mt-1">Learning Opportunities</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="glass-section p-0 overflow-hidden bg-white border-0 shadow-lg rounded-4" data-aos="fade-up">
+        <div class="p-4 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="fw-black text-navy mb-0"><i class="bi bi-list-columns-reverse me-2"></i> MASTER PLACEMENT LEDGER</h5>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-navy fw-bold rounded-pill px-3"><i class="bi bi-download me-1"></i> EXPORT</button>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-navy text-white">
+                    <tr>
+                        <th class="ps-4 py-3">STUDENT</th>
+                        <th class="py-3">BRANCH</th>
+                        <th class="py-3">COMPANY</th>
+                        <th class="py-3">OFFER (LPA)</th>
+                        <th class="py-3">STATUS</th>
+                        <th class="pe-4 py-3 text-end">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for placement in placements %}
+                    <tr>
+                        <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-sm bg-light text-navy rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 35px; height: 35px; font-size: 0.8rem;">
+                                    {{ placement.student.name|slice:":1" }}
+                                </div>
+                                <div class="fw-bold text-navy">{{ placement.student.name }}</div>
+                            </div>
+                        </td>
+                        <td class="py-3 small text-muted fw-bold">{{ placement.student.branch }}</td>
+                        <td class="py-3 fw-bold text-navy">{{ placement.company.name }}</td>
+                        <td class="py-3">
+                            <span class="fw-black text-success">₹{{ placement.company.package }}</span>
+                        </td>
+                        <td class="py-3">
+                            {% if placement.status == 'SELECTED' %}
+                                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill border border-success fw-bold small">
+                                    <i class="bi bi-patch-check-fill me-1"></i> SELECTED
+                                </span>
+                            {% elif placement.status == 'PENDING' %}
+                                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill border border-warning fw-bold small">
+                                    <i class="bi bi-hourglass-split me-1"></i> PENDING
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill border border-danger fw-bold small">
+                                    <i class="bi bi-x-circle-fill me-1"></i> REJECTED
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-4 py-3 text-end">
+                            <a href="{% url 'update_placement' placement.id %}" class="btn btn-sm btn-navy fw-bold px-3 rounded-pill shadow-xs">
+                                <i class="bi bi-pencil-square"></i> UPDATE
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <div class="opacity-25 mb-3"><i class="bi bi-briefcase display-1"></i></div>
+                            <h6 class="text-muted fw-bold">No active placement records discovered.</h6>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; }
+    .btn-navy:hover { background-color: #0c1a4d !important; transform: translateY(-1px); }
+    .btn-outline-navy { border-color: var(--rv-navy); color: var(--rv-navy); }
+    .btn-outline-navy:hover { background-color: var(--rv-navy); color: white; }
+    .fw-black { font-weight: 900 !important; }
+    .bg-success-subtle { background-color: rgba(25, 135, 84, 0.05) !important; }
+    .bg-warning-subtle { background-color: rgba(255, 193, 7, 0.05) !important; }
+    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.05) !important; }
+    .shadow-xs { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+</style>
+
+{% endblock %}

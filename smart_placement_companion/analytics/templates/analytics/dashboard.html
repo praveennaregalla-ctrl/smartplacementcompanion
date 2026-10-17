@@ -1,0 +1,162 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Placement Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="glass-section" style="padding: 25px;">
+    <div class="section-header" style="font-size: 1.25rem; margin-bottom: 25px;">
+        <i class="bi bi-graph-up-arrow me-2 text-gold"></i> Placement Analytics Overview
+    </div>
+
+    <!-- Compact Stats Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-primary border-4 h-100">
+                <div class="text-muted small fw-bold text-uppercase mb-1">Total Students</div>
+                <div class="h4 fw-bold mb-0 text-navy">{{ total_students }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-success border-4 h-100">
+                <div class="text-muted small fw-bold text-uppercase mb-1">Placed Students</div>
+                <div class="h4 fw-bold mb-0 text-success">{{ selected }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-warning border-4 h-100">
+                <div class="text-muted small fw-bold text-uppercase mb-1">Companies</div>
+                <div class="h4 fw-bold mb-0 text-navy">{{ total_companies }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-info border-4 h-100">
+                <div class="text-muted small fw-bold text-uppercase mb-1">Placement Rate</div>
+                <div class="h4 fw-bold mb-0 text-info">{{ placement_rate }}%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-3 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-pie-chart-fill me-2 text-primary"></i>
+                    <span class="fw-bold small text-uppercase">Status Distribution</span>
+                </div>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-3 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-bar-chart-fill me-2 text-success"></i>
+                    <span class="fw-bold small text-uppercase">Branch Performance</span>
+                </div>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="branchChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card border-0 shadow-sm p-3">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-activity me-2 text-info"></i>
+                    <span class="fw-bold small text-uppercase">Monthly Registration Trends</span>
+                </div>
+                <div style="position: relative; height: 250px;">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for item in status_data %}"{{ item.status }}",{% endfor %}],
+            datasets: [{
+                data: [{% for item in status_data %}{{ item.count }},{% endfor %}],
+                backgroundColor: ['#0b3c6d', '#2ecc71', '#e74c3c', '#f1c40f', '#95a5a6']
+            }]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // 2. Branch Chart
+    const branchCtx = document.getElementById('branchChart').getContext('2d');
+    new Chart(branchCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for item in branch_data %}"{{ item.branch }}",{% endfor %}],
+            datasets: [
+                {
+                    label: 'Total',
+                    data: [{% for item in branch_data %}{{ item.total }},{% endfor %}],
+                    backgroundColor: '#bdc3c7',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Placed',
+                    data: [{% for item in branch_data %}{{ item.placed }},{% endfor %}],
+                    backgroundColor: '#0b3c6d',
+                    borderRadius: 4
+                }
+            ]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // 3. Trend Chart
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+    new Chart(trendCtx, {
+        type: 'line',
+        data: {
+            labels: [{% for item in trend_data %}"{{ item.month }}",{% endfor %}],
+            datasets: [{
+                label: 'Applications',
+                data: [{% for item in trend_data %}{{ item.count }},{% endfor %}],
+                borderColor: '#0b3c6d',
+                backgroundColor: 'rgba(11, 60, 109, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#0b3c6d'
+            }]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

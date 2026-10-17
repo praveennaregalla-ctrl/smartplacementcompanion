@@ -1,0 +1,277 @@
+{% extends "core/base.html" %}
+
+{% block title %}Placements Dashboard{% endblock %}
+
+{% block page_title %}Placements Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .status-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-left: 4px solid;
+        transition: all 0.3s ease;
+    }
+    
+    .status-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    
+    .status-card.selected { border-left-color: #28a745; }
+    .status-card.pending { border-left-color: #ffc107; }
+    .status-card.rejected { border-left-color: #dc3545; }
+    
+    .status-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+    
+    .status-icon.selected { background: rgba(40,167,69,0.1); color: #28a745; }
+    .status-icon.pending { background: rgba(255,193,7,0.1); color: #856404; }
+    .status-icon.rejected { background: rgba(220,53,69,0.1); color: #dc3545; }
+    
+    .placement-table {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .table-header {
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #0f3b57 0%, #1a5f8a 100%);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .status-badge.selected { 
+        background: #d4edda; 
+        color: #155724;
+    }
+    
+    .status-badge.pending { 
+        background: #fff3cd; 
+        color: #856404;
+    }
+    
+    .status-badge.rejected { 
+        background: #f8d7da; 
+        color: #721c24;
+    }
+    
+    .student-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0f3b57 0%, #1a5f8a 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .action-links a {
+        color: #0f3b57;
+        text-decoration: none;
+        font-weight: 600;
+        margin-right: 12px;
+        transition: all 0.2s;
+    }
+    
+    .action-links a:hover {
+        color: #1a5f8a;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .table-header { flex-direction: column; gap: 12px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Status Summary Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="status-card selected">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" style="color: #28a745; font-size: 32px; font-weight: 700;">
+                            {{ selected_count }}
+                        </div>
+                        <div class="stat-label" style="color: #7f8c8d; font-weight: 500;">Students Selected</div>
+                    </div>
+                    <div class="status-icon selected">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="status-card pending">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" style="color: #856404; font-size: 32px; font-weight: 700;">
+                            {{ pending_count }}
+                        </div>
+                        <div class="stat-label" style="color: #7f8c8d; font-weight: 500;">Pending Process</div>
+                    </div>
+                    <div class="status-icon pending">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="status-card rejected">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" style="color: #dc3545; font-size: 32px; font-weight: 700;">
+                            {{ rejected_count }}
+                        </div>
+                        <div class="stat-label" style="color: #7f8c8d; font-weight: 500;">Rejected</div>
+                    </div>
+                    <div class="status-icon rejected">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Placements Table -->
+    <div class="placement-table">
+        <div class="table-header">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-briefcase-fill me-2"></i>
+                All Placements
+            </h4>
+            <div class="d-flex gap-2 align-items-center">
+                <select class="form-select" id="statusFilter" style="width: 160px; border: none;">
+                    <option value="">All Status</option>
+                    <option value="selected">Selected</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <a href="{% url 'placements' %}" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left-right"></i> Switch View
+                </a>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background: #f8f9fa;">
+                    <tr>
+                        <th class="fw-semibold">Student</th>
+                        <th class="fw-semibold">Company</th>
+                        <th class="fw-semibold">Role</th>
+                        <th class="fw-semibold">Package</th>
+                        <th class="fw-semibold">Status</th>
+                        <th class="fw-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for placement in placements %}
+                    <tr class="placement-row" data-status="{{ placement.status|lower }}">
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar">
+                                    {{ placement.student.name|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">{{ placement.student.name }}</div>
+                                    <small class="text-muted">{{ placement.student.branch }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ placement.company.name }}</td>
+                        <td>{{ placement.company.role }}</td>
+                        <td>
+                            <span class="fw-bold" style="color: #28a745;">
+                                ₹{{ placement.company.package }} LPA
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge {{ placement.status|lower }}">
+                                {% if placement.status == 'SELECTED' %}
+                                    <i class="bi bi-check-circle"></i>
+                                {% elif placement.status == 'PENDING' %}
+                                    <i class="bi bi-hourglass"></i>
+                                {% else %}
+                                    <i class="bi bi-x-circle"></i>
+                                {% endif %}
+                                {{ placement.status }}
+                            </span>
+                        </td>
+                        <td class="action-links">
+                            <a href="{% url 'update_placement' placement.id %}">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+                            <h5 class="text-muted">No Placements Yet</h5>
+                            <p class="text-muted">Start by adding companies and students</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Filter by status
+    document.getElementById('statusFilter').addEventListener('change', function(e) {
+        const status = e.target.value;
+        const rows = document.querySelectorAll('.placement-row');
+        
+        rows.forEach(row => {
+            if (!status || row.dataset.status === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

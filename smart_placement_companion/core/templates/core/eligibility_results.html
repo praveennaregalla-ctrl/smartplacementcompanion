@@ -1,0 +1,136 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Eligibility Checker - Smart Placement Assistant{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-4">
+    <div class="row g-4 justify-content-center" data-aos="fade-up">
+        <div class="col-lg-11">
+            <div class="glass-section p-0 overflow-hidden bg-white border-0 shadow-lg rounded-4">
+                <div class="p-4 bg-navy text-white d-flex justify-content-between align-items-center">
+                    <h4 class="fw-black mb-0" style="font-weight: 900;"><i class="bi bi-shield-check text-gold me-2"></i> Eligibility & Skill Gap Report</h4>
+                    <span class="badge bg-gold text-navy fw-bold px-3 py-2">ID: {{ student.id }}{{ company.id }}</span>
+                </div>
+
+                <div class="p-5">
+                    <div class="row g-5">
+                        <!-- Left Panel: Profile & Basic Criteria -->
+                        <div class="col-lg-4 border-end">
+                            <div class="text-center mb-5">
+                                <div class="profile-avatar mb-3 mx-auto bg-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 100px; height: 100px;">
+                                    {% if student.profile_picture %}
+                                        <img src="{{ student.profile_picture.url }}" class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                        <i class="bi bi-person-fill display-4 text-navy"></i>
+                                    {% endif %}
+                                </div>
+                                <h5 class="fw-black text-navy mb-1">{{ student.name }}</h5>
+                                <p class="text-muted small mb-0">{{ student.branch }} | CGPA: {{ student.cgpa }}</p>
+                            </div>
+
+                            <div class="criteria-card mb-4">
+                                <h6 class="fw-bold text-navy mb-3 small text-uppercase" style="letter-spacing: 1px;">Basic Eligibility</h6>
+                                <div class="p-3 rounded-4 bg-light border mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="small fw-bold">Academic Criteria</span>
+                                        {% if is_basic_eligible %}
+                                            <span class="badge bg-success rounded-pill">QUALIFIED</span>
+                                        {% else %}
+                                            <span class="badge bg-danger rounded-pill">NOT QUALIFIED</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="small text-muted">
+                                        <i class="bi {% if cgpa_pass %}bi-check2-circle text-success{% else %}bi-x-circle text-danger{% endif %} me-2"></i> CGPA >= {{ company.min_cgpa }}<br>
+                                        <i class="bi {% if branch_pass %}bi-check2-circle text-success{% else %}bi-x-circle text-danger{% endif %} me-2"></i> Branch: {{ company.branch }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="match-score-card p-4 rounded-4 bg-navy text-white text-center shadow-lg">
+                                <h6 class="fw-bold text-gold mb-2">MATCH SCORE</h6>
+                                <div class="display-3 fw-black mb-0">{{ match_score }}%</div>
+                                <div class="progress mt-3" style="height: 6px; background: rgba(255,255,255,0.1);">
+                                    <div class="progress-bar bg-gold" style="width: {{ match_score }}%;"></div>
+                                </div>
+                                <p class="small opacity-50 mt-3 mb-0">Calculated based on required skills for <strong>{{ company.role }}</strong></p>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Skill Breakdown & Next Steps -->
+                        <div class="col-lg-8">
+                            <h5 class="fw-black text-navy mb-4">Role Requirement Breakdown</h5>
+                            
+                            <div class="row g-4 mb-5">
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold text-success mb-3 small text-uppercase"><i class="bi bi-patch-check-fill me-2"></i> Matched ({{ skill_gap.matched|length }})</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for skill in skill_gap.matched %}
+                                            <span class="badge bg-success-subtle text-success border-success px-3 py-2 rounded-3 border fw-medium shadow-sm">{{ skill }}</span>
+                                        {% empty %}
+                                            <p class="text-muted small">No matches identified yet.</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold text-danger mb-3 small text-uppercase"><i class="bi bi-patch-exclamation-fill me-2"></i> Missing ({{ skill_gap.missing|length }})</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for skill in skill_gap.missing %}
+                                            <span class="badge bg-danger-subtle text-danger border-danger px-3 py-2 rounded-3 border fw-medium shadow-sm">{{ skill }}</span>
+                                        {% empty %}
+                                            <p class="text-success small fw-bold">Perfect Skill Match!</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="action-roadmap p-4 rounded-4 bg-light border-start border-4 border-gold shadow-sm">
+                                <h6 class="fw-black text-navy mb-3"><i class="bi bi-lightbulb-fill text-gold me-2"></i> What should you study next?</h6>
+                                <p class="text-muted mb-4 small">To improve your chances for <strong>{{ company.name }}</strong>, focus on these learning targets:</p>
+                                
+                                <div class="roadmap-steps">
+                                    {% if skill_gap.missing %}
+                                        {% for skill in skill_gap.missing|slice:":3" %}
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="step-num me-3 bg-navy text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 24px; height: 24px; font-size: 0.7rem;">{{ forloop.counter }}</div>
+                                                <div class="fw-bold text-navy small">Master {{ skill|upper }} fundamentals</div>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="alert alert-success border-0 shadow-none mb-0">
+                                            <i class="bi bi-stars me-2"></i> You are fully prepared! Focus on company-specific behavioral questions and past interview experiences.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mt-5 d-flex gap-3">
+                                <a href="{% url 'company_detail' company.id %}" class="btn btn-navy px-4 py-2 fw-bold rounded-3">
+                                    <i class="bi bi-arrow-left me-2"></i> COMPANY INFO
+                                </a>
+                                <a href="{% url 'interview:predictor' %}" class="btn btn-gold text-navy px-4 py-2 fw-bold rounded-3">
+                                    PREPARE INTERVIEW <i class="bi bi-chevron-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-navy { color: var(--rv-navy) !important; }
+    .text-gold { color: var(--rv-gold) !important; }
+    .bg-gold { background-color: var(--rv-gold) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; }
+    .btn-navy:hover { background-color: #0c1a4d !important; transform: translateY(-2px); }
+    .btn-gold { background-color: var(--rv-gold) !important; color: var(--rv-navy) !important; }
+    .btn-gold:hover { background-color: #b58d4a !important; transform: translateY(-2px); }
+    .fw-black { font-weight: 900 !important; }
+    .bg-success-subtle { background-color: rgba(25, 135, 84, 0.05) !important; }
+    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.05) !important; }
+</style>
+
+{% endblock %}

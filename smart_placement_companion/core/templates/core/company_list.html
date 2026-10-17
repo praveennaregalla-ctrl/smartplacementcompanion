@@ -1,0 +1,123 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Companies - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-4">
+    <div class="d-flex justify-content-between align-items-end mb-5" data-aos="fade-down">
+        <div>
+            <h2 class="fw-black text-navy mb-1" style="font-weight: 900;">Company Explorer</h2>
+            <p class="text-muted">Discover premium placement opportunities and verify your eligibility in real-time.</p>
+        </div>
+        {% if request.session.role == 'admin' %}
+            <a href="{% url 'add_company' %}" class="btn btn-navy px-4 py-2 fw-bold rounded-3 shadow-sm">
+                <i class="bi bi-building-plus me-2"></i> REGISTER COMPANY
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Company Grid -->
+    <div class="row g-4">
+        {% for company in companies %}
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1 }}00">
+            <div class="company-card h-100 bg-white border-0 shadow-lg rounded-4 overflow-hidden position-relative transition-all hover-shadow">
+                <!-- Top Accent Bar -->
+                <div class="accent-bar bg-gold" style="height: 6px;"></div>
+                
+                <!-- Card Header -->
+                <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-black text-navy mb-0">{{ company.name }}</h5>
+                        <p class="small text-muted mb-0"><i class="bi bi-geo-alt-fill me-1 text-gold"></i> {{ company.location }}</p>
+                    </div>
+                    {% if company.is_featured %}
+                        <span class="badge bg-gold text-navy rounded-pill px-2 py-1 small fw-bold">FEATURED</span>
+                    {% endif %}
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-4">
+                    <div class="role-info mb-4">
+                        <div class="small text-muted text-uppercase fw-bold mb-1" style="letter-spacing: 1px; font-size: 0.7rem;">Target Role</div>
+                        <h6 class="fw-bold text-navy">{{ company.role }}</h6>
+                    </div>
+
+                    <div class="package-info mb-4 p-3 rounded-4 bg-navy text-white d-flex justify-content-between align-items-center shadow-sm">
+                        <div class="small fw-bold text-gold">ANNUAL PACKAGE</div>
+                        <div class="h4 fw-black mb-0">₹{{ company.package }} <small class="fw-bold">LPA</small></div>
+                    </div>
+
+                    <div class="criteria-list mb-4">
+                        <div class="d-flex justify-content-between mb-2 small border-bottom pb-1">
+                            <span class="text-muted">Min CGPA Required</span>
+                            <span class="fw-bold text-navy">{{ company.min_cgpa }}</span>
+                        </div>
+                        <div class="small text-muted mt-2">
+                            <div class="fw-bold mb-1">Target Branches:</div>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for branch in company.branches_list %}
+                                    <span class="badge bg-light text-navy border px-2 py-1 small">{{ branch }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="p-4 bg-light border-top d-grid gap-2">
+                    <a href="{% url 'company_detail' company.id %}" class="btn btn-navy fw-bold py-2 rounded-3">VIEW DETAILS</a>
+                    
+                    {% if request.session.role == 'student' %}
+                        <a href="{% url 'check_eligibility' %}?student_id={{ request.session.student_id }}&company_id={{ company.id }}" class="btn btn-outline-navy fw-bold py-2 rounded-3">
+                            <i class="bi bi-shield-check me-2"></i> CHECK ELIGIBILITY
+                        </a>
+                    {% endif %}
+
+                    {% if request.session.role == 'admin' %}
+                        <a href="{% url 'company_eligible' company.id %}" class="btn btn-outline-success fw-bold py-2 rounded-3">
+                            <i class="bi bi-people-fill me-2"></i> VIEW ELIGIBLE STUDENTS
+                        </a>
+                        <a href="{% url 'edit_company' company.id %}" class="btn btn-outline-danger py-2 fw-bold rounded-3">
+                            <i class="bi bi-pencil-square me-2"></i> EDIT COMPANY
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="opacity-25 mb-3"><i class="bi bi-buildings display-1"></i></div>
+            <h4 class="text-muted fw-bold">No recruiting companies registered</h4>
+            {% if request.session.role == 'admin' %}
+                <p class="text-muted mb-4">Start by adding a company to the portal.</p>
+                <a href="{% url 'add_company' %}" class="btn btn-navy px-4 fw-bold">ADD NEW COMPANY</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .bg-navy { background-color: var(--rv-navy) !important; }
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; }
+    .btn-navy:hover { background-color: #0c1a4d !important; transform: translateY(-2px); }
+    .btn-outline-navy { border-color: var(--rv-navy); color: var(--rv-navy); }
+    .btn-outline-navy:hover { background-color: var(--rv-navy); color: white; }
+    .text-gold { color: var(--rv-gold) !important; }
+    .bg-gold { background-color: var(--rv-gold) !important; }
+    .fw-black { font-weight: 900 !important; }
+    
+    .company-card {
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .company-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.1) !important;
+    }
+    .company-card:hover .accent-bar {
+        height: 10px;
+    }
+</style>
+
+{% endblock %}
