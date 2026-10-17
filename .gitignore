@@ -1,0 +1,16 @@
+.venv/
+.venv-1/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+build/
+smart_placement_companion/.vercel/
+smart_placement_companion/staticfiles/
+smart_placement_companion/db.sqlite3
+smart_placement_companion/logs/
+smart_placement_companion/media/

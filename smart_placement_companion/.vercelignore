@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.vercel/
+staticfiles/
+db.sqlite3
+logs/
+media/
+test_output.txt

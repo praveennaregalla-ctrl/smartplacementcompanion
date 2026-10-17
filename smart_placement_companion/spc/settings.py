@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 # Load environment variables
 load_dotenv()
@@ -25,12 +27,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-change-in-production')
+VERCEL_DEPLOYMENT = os.getenv('VERCEL') == '1'
+SECRET_KEY = os.getenv('SECRET_KEY')
+if VERCEL_DEPLOYMENT and not SECRET_KEY:
+    raise ImproperlyConfigured('Set SECRET_KEY in the Vercel project environment variables.')
+SECRET_KEY = SECRET_KEY or 'django-insecure-change-in-production'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',') if host.strip()]
+VERCEL_HOSTS = [
+    os.getenv(name, '').strip()
+    for name in ('VERCEL_URL', 'VERCEL_PROJECT_PRODUCTION_URL')
+    if os.getenv(name, '').strip()
+]
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
+    if host.strip()
+] + VERCEL_HOSTS
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+] + [f'https://{host}' for host in VERCEL_HOSTS]
 
 
 # Application definition
@@ -116,6 +136,7 @@ JAZZMIN_UI_TWEAKS = {
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -147,13 +168,27 @@ WSGI_APPLICATION = 'spc.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# SQLite Database Configuration (for local development)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# SQLite is for local development; Vercel requires a persistent PostgreSQL database.
+DATABASE_URL = os.getenv('DATABASE_URL')
+if VERCEL_DEPLOYMENT and not DATABASE_URL:
+    raise ImproperlyConfigured('Set DATABASE_URL to a persistent PostgreSQL database in Vercel.')
+
+if DATABASE_URL:
+    DATABASE_CONFIG = dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=VERCEL_DEPLOYMENT,
+    )
+    if VERCEL_DEPLOYMENT and DATABASE_CONFIG['ENGINE'] != 'django.db.backends.postgresql':
+        raise ImproperlyConfigured('DATABASE_URL must point to a persistent PostgreSQL database on Vercel.')
+    DATABASES = {'default': DATABASE_CONFIG}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 
 # Password validation
@@ -192,7 +227,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
@@ -213,6 +248,7 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
