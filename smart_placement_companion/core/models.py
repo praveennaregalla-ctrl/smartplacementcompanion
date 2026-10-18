@@ -60,6 +60,7 @@ class Student(models.Model):
     headline = models.CharField(max_length=255, blank=True, null=True, help_text="Professional headline (e.g. Aspiring Software Engineer)")
     profile_picture = models.ImageField(
         upload_to='profiles/%Y/%m/',
+        max_length=255,
         null=True,
         blank=True,
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])]
