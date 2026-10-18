@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    'cloudinary_storage',
     "django.contrib.staticfiles",
     "django.contrib.sites",  # Required for email domain
     "core",
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     "interview",
     "aptitude",
     "analytics",
+    'cloudinary',
 ]
 
 SITE_ID = 1
@@ -296,5 +298,19 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+    },
+}
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
+}
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
     },
 }
