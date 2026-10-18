@@ -1,0 +1,95 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Aptitude Practice{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-black text-navy mb-1">Aptitude Practice</h2>
+            <p class="text-muted mb-0">Practice one question at a time, review explanations, and prepare for a timed test.</p>
+        </div>
+        <a href="{% url 'aptitude:test_home' %}" class="btn btn-warning px-4 py-2 fw-bold rounded-3 shadow-sm">
+            <i class="bi bi-stopwatch-fill me-2"></i> TAKE TIMED TEST
+        </a>
+    </div>
+
+    <div class="glass-section p-4 rounded-4 bg-white border-0 shadow-lg mb-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-bold text-navy small text-uppercase">Choose Category</label>
+                <select name="category" class="form-select">
+                    <option value="">All Practice Areas</option>
+                    {% for value, label in categories %}
+                        <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold text-navy small text-uppercase">Difficulty</label>
+                <select name="difficulty" class="form-select">
+                    <option value="">All levels</option>
+                    {% for value, label in difficulties %}
+                        <option value="{{ value }}" {% if selected_difficulty == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-navy w-100 fw-bold">Filter</button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'aptitude:practice_session' %}" class="btn btn-outline-secondary w-100">Reset</a>
+            </div>
+            <div class="col-12 small text-muted">{{ question_count }} question{{ question_count|pluralize }} match your filters.</div>
+        </form>
+    </div>
+
+    {% if question %}
+        <div class="glass-section p-4 rounded-4 bg-white border-0 shadow-lg">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <span class="badge bg-navy text-white px-3 py-2 rounded-pill">{{ question.get_category_display }}</span>
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">{{ question.get_difficulty_display }}</span>
+            </div>
+
+            <h3 class="fw-black text-navy mb-3">{{ question.title }}</h3>
+            <p class="lead mb-4">{{ question.prompt }}</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="question_id" value="{{ question.id }}">
+
+                {% if question.options %}
+                    <div class="list-group mb-4">
+                        {% for option in question.options %}
+                            <label class="list-group-item d-flex align-items-start gap-3 rounded-3 mb-2 border">
+                                <input class="form-check-input mt-1" type="radio" name="selected_answer" value="{{ option }}" required>
+                                <span>{{ option }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-navy">Your Answer</label>
+                        <textarea name="selected_answer" class="form-control" rows="5" placeholder="Write the answer, logic, or code here..." required></textarea>
+                    </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-navy px-5 py-3 fw-bold rounded-3 shadow-sm">Check Answer</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="glass-section p-5 text-center rounded-4 border-0 shadow-lg">
+            <i class="bi bi-journal-x display-1 text-muted opacity-25"></i>
+            <h3 class="fw-black text-navy mt-3">No practice questions found</h3>
+            <p class="text-muted">Try another filter or ask an administrator to add active questions in the Aptitude Questions admin page.</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .btn-navy:hover { background-color: #0c1a4d !important; }
+    .fw-black { font-weight: 900 !important; }
+</style>
+{% endblock %}

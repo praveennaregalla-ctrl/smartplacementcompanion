@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Aptitude Timed Test{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="glass-section p-4 p-md-5 rounded-4 bg-white border-0 shadow-lg">
+                <a href="{% url 'aptitude:practice_session' %}" class="text-decoration-none small fw-bold">&larr; Back to practice</a>
+                <div class="text-center py-4">
+                    <div class="display-4 text-warning mb-3"><i class="bi bi-stopwatch-fill"></i></div>
+                    <h1 class="fw-black text-navy">Timed Aptitude Test</h1>
+                    <p class="text-muted lead">Test yourself under placement-style time pressure.</p>
+                </div>
+
+                <div class="row g-3 text-center mb-4">
+                    <div class="col-6">
+                        <div class="p-3 bg-light border rounded-3 h-100">
+                            <div class="h2 fw-bold text-navy mb-0">{{ test_question_count }}</div>
+                            <div class="small text-muted text-uppercase fw-bold">Questions</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light border rounded-3 h-100">
+                            <div class="h2 fw-bold text-navy mb-0">{{ duration_minutes }} min</div>
+                            <div class="small text-muted text-uppercase fw-bold">Time limit</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>{{ question_count }} active question{{ question_count|pluralize }}</strong> are available. The test draws up to 50 unique questions from the active bank and allows one minute per question. A full 50-question test lasts 50 minutes.
+                </div>
+                <ul class="text-muted mb-4">
+                    <li>Your time starts as soon as you begin and continues while moving between questions.</li>
+                    <li>Use the question numbers to move around. Your answer is saved when you navigate.</li>
+                    <li>Submit when you are done; unanswered questions count as incorrect. The test submits automatically when time runs out.</li>
+                    <li>Once submitted, your score and answer explanations are shown.</li>
+                </ul>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-warning">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if test_question_count %}
+                    <form method="post" action="{% url 'aptitude:start_test' %}" class="text-center">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-navy btn-lg px-5 fw-bold">Start Test</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-warning mb-0">
+                        No answerable questions are available yet. An administrator can add questions from
+                        <a href="{% url 'admin:aptitude_aptitudequestion_add' %}">Aptitude Questions</a>.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .fw-black { font-weight: 900 !important; }
+</style>
+{% endblock %}

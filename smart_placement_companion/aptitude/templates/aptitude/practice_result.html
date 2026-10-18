@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Practice Result{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="glass-section p-5 rounded-4 bg-white border-0 shadow-lg">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <span class="badge bg-navy text-white px-3 py-2 rounded-pill">{{ question.get_category_display }}</span>
+            <span class="badge {% if is_correct %}bg-success{% else %}bg-danger{% endif %} text-white px-3 py-2 rounded-pill">
+                {% if is_correct %}Correct{% else %}Incorrect{% endif %}
+            </span>
+        </div>
+
+        <h2 class="fw-black text-navy mb-3">{{ question.title }}</h2>
+        <p class="lead mb-4">{{ question.prompt }}</p>
+
+        <div class="mb-4">
+            <h5 class="fw-bold text-navy">Your answer</h5>
+            <div class="p-3 bg-light rounded-3 border">{{ selected_answer|default:'No answer provided' }}</div>
+        </div>
+
+        <div class="mb-4">
+            <h5 class="fw-bold text-navy">Correct answer</h5>
+            <div class="p-3 bg-light rounded-3 border">{{ question.correct_answer }}</div>
+        </div>
+
+        <div class="mb-4">
+            <h5 class="fw-bold text-navy">Explanation</h5>
+            <div class="p-3 bg-light rounded-3 border">{{ question.explanation|default:'No explanation provided yet.' }}</div>
+        </div>
+
+        <div class="d-flex gap-3 flex-wrap">
+            <a href="{% url 'aptitude:practice_session' %}" class="btn btn-navy px-4 py-2 fw-bold rounded-3">Practice Another Question</a>
+            <a href="{% url 'interview:mock_interview' %}" class="btn btn-outline-secondary px-4 py-2 fw-bold rounded-3">Go to Mock Interview</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .btn-navy:hover { background-color: #0c1a4d !important; }
+    .fw-black { font-weight: 900 !important; }
+</style>
+{% endblock %}

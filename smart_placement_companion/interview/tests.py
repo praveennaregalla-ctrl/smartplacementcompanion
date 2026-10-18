@@ -1,4 +1,5 @@
-from django.test import TestCase
+from django.test import Client, TestCase
+from django.urls import reverse
 
 from aptitude.models import AptitudeQuestion
 from interview.models import InterviewQuestion
@@ -51,3 +52,28 @@ class AptitudeQuestionModelTests(TestCase):
         self.assertEqual(question.category, 'APTITUDE')
         self.assertEqual(question.correct_answer, '225')
         self.assertIn('percentage', question.title.lower())
+        self.assertTrue(question.is_correct_answer(' 225 '))
+        self.assertFalse(question.is_correct_answer('180'))
+
+
+class AptitudePracticeViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        session = self.client.session
+        session['role'] = 'student'
+        session.save()
+
+    def test_practice_page_uses_aptitude_template(self):
+        AptitudeQuestion.objects.create(
+            category='APTITUDE',
+            title='Average Speed',
+            prompt='A cyclist travels 30 km in 2 hours and 20 km in 1 hour. What is the average speed?',
+            options=['20 km/h', '25 km/h', '30 km/h', '35 km/h'],
+            correct_answer='25 km/h',
+            difficulty='MEDIUM',
+        )
+
+        response = self.client.get(reverse('aptitude:practice_session'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'aptitude/practice_lab.html')

@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Aptitude Test Results{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="bg-white rounded-4 shadow-lg p-4 p-md-5 mb-4 text-center">
+        <div class="display-5 text-success mb-2"><i class="bi bi-clipboard2-check-fill"></i></div>
+        <h1 class="fw-black text-navy">Test complete</h1>
+        <p class="lead text-muted mb-4">Your answers are scored. Review each solution below.</p>
+        <div class="row justify-content-center g-3">
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded-3">
+                    <div class="h2 fw-bold text-navy mb-0">{{ attempt.score }}/{{ attempt.total_questions }}</div>
+                    <div class="small text-muted text-uppercase fw-bold">Score</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded-3">
+                    <div class="h2 fw-bold text-navy mb-0">{{ percentage }}%</div>
+                    <div class="small text-muted text-uppercase fw-bold">Accuracy</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-light rounded-3">
+                    <div class="h2 fw-bold text-navy mb-0">{{ elapsed_minutes }} min</div>
+                    <div class="small text-muted text-uppercase fw-bold">Time used</div>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'aptitude:test_home' %}" class="btn btn-navy fw-bold px-4 mt-4">Take another test</a>
+        <a href="{% url 'aptitude:practice_session' %}" class="btn btn-outline-secondary fw-bold px-4 mt-4">Practice questions</a>
+    </div>
+
+    <h2 class="h4 fw-bold text-navy mb-3">Answer review</h2>
+    {% for item in review %}
+        <article class="bg-white rounded-4 shadow-sm p-4 mb-3 border-start border-4 {% if item.is_correct %}border-success{% else %}border-danger{% endif %}">
+            <div class="d-flex justify-content-between gap-2 flex-wrap mb-2">
+                <span class="badge bg-navy">{{ item.category }} · {{ item.difficulty }}</span>
+                <span class="badge {% if item.is_correct %}bg-success{% else %}bg-danger{% endif %}">{% if item.is_correct %}Correct{% else %}Incorrect{% endif %}</span>
+            </div>
+            <h3 class="h5 fw-bold text-navy">{{ forloop.counter }}. {{ item.title }}</h3>
+            <p>{{ item.prompt }}</p>
+            <p class="mb-1"><strong>Your answer:</strong> {{ item.selected_answer|default:'Not answered' }}</p>
+            {% if not item.is_correct %}
+                <p class="mb-1"><strong>Correct answer:</strong> {{ item.correct_answer }}</p>
+            {% endif %}
+            {% if item.explanation %}
+                <p class="text-muted mb-0 mt-2"><strong>Why:</strong> {{ item.explanation }}</p>
+            {% endif %}
+        </article>
+    {% endfor %}
+</div>
+<style>
+    .text-navy { color: var(--rv-navy) !important; }
+    .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .fw-black { font-weight: 900 !important; }
+</style>
+{% endblock %}

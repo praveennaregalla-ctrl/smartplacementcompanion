@@ -7,26 +7,32 @@
 {% block extra_css %}
 <style>
     .search-container {
-        background: white;
-        border-radius: 12px;
+        background: var(--spatial-glass-bg);
+        backdrop-filter: var(--spatial-blur-md);
+        -webkit-backdrop-filter: var(--spatial-blur-md);
+        border-radius: var(--spatial-radius-lg);
         padding: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top);
+        border: 1px solid var(--spatial-glass-border);
         margin-bottom: 24px;
     }
     
     .student-card {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        border-left: 4px solid #0f3b57;
+        background: var(--spatial-glass-bg);
+        backdrop-filter: var(--spatial-blur-md);
+        -webkit-backdrop-filter: var(--spatial-blur-md);
+        border-radius: var(--spatial-radius-lg);
+        padding: 24px;
+        box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top);
+        transition: var(--spatial-spring);
+        border: 1px solid var(--spatial-glass-border);
+        border-left: 5px solid var(--rv-navy);
         height: 100%;
     }
     
     .student-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: var(--spatial-shadow-md), var(--spatial-specular-top);
     }
     
     .student-avatar {

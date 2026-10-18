@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class AptitudeQuestion(models.Model):
@@ -29,8 +30,42 @@ class AptitudeQuestion(models.Model):
         ordering = ['category', 'difficulty', 'id']
         db_table = 'aptitude_question'
 
+    @staticmethod
+    def _normalize_answer(value):
+        return str(value or '').strip().casefold()
+
+    def is_correct_answer(self, submitted_answer):
+        normalized_expected = self._normalize_answer(self.correct_answer)
+        normalized_submitted = self._normalize_answer(submitted_answer)
+        return normalized_expected == normalized_submitted
+
     def __str__(self):
         return f"[{self.category}] {self.title} ({self.difficulty})"
+
+
+class AptitudeTestAttempt(models.Model):
+    QUESTION_COUNT = 50
+    DURATION_SECONDS = 50 * 60
+
+    owner_key = models.CharField(max_length=64, db_index=True)
+    questions = models.JSONField(default=list)
+    answers = models.JSONField(default=dict, blank=True)
+    total_questions = models.PositiveSmallIntegerField(default=QUESTION_COUNT)
+    duration_seconds = models.PositiveIntegerField(default=DURATION_SECONDS)
+    started_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+    completed_at = models.DateTimeField(null=True, blank=True)
+    score = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-started_at']
+
+    @property
+    def is_completed(self):
+        return self.completed_at is not None
+
+    def __str__(self):
+        return f"Aptitude test ({self.score}/{self.total_questions})" if self.is_completed else "Aptitude test in progress"
 
 
 PracticeSession = AptitudeQuestion

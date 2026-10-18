@@ -1,0 +1,960 @@
+
+/**
+ * SPATIAL UI DESIGN SYSTEM - Smart Placement Companion
+ * VisionOS & Spatial Computing Inspired Glassmorphic Architecture
+ * Designed to elevate aesthetics while preserving 100% of functional features and data models.
+ */
+
+:root {
+    /* Core Brand Tones */
+    --rv-navy: #001F4D;
+    --rv-navy-light: #f3f4f6;
+    --rv-navy-deep: #061e38;
+    --rv-gold: #CBA35C;
+    --rv-gold-light: #dfb76c;
+    --rv-gold-glow: rgba(203, 163, 92, 0.35);
+    --rv-dark-navy: #08102B;
+
+    /* Spatial Canvas & Materials */
+    --spatial-bg: #f3f6fa;
+    --spatial-canvas-gradient: 
+        radial-gradient(circle at 15% 15%, rgba(203, 163, 92, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(11, 60, 109, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        linear-gradient(135deg, #f6f8fc 0%, #eef2f7 50%, #f0f4f9 100%);
+
+    /* Multi-layered Glassmorphic Surfaces */
+    --spatial-glass-bg: rgba(255, 255, 255, 0.75);
+    --spatial-glass-bg-elevated: rgba(255, 255, 255, 0.88);
+    --spatial-glass-bg-ultra: rgba(255, 255, 255, 0.94);
+    --spatial-glass-bg-dark: rgba(8, 22, 44, 0.82);
+    --spatial-glass-bg-card-dark: rgba(11, 32, 60, 0.78);
+    
+    /* Specular Highlights & Hairline Borders */
+    --spatial-glass-border: rgba(255, 255, 255, 0.65);
+    --spatial-glass-border-subtle: rgba(11, 60, 109, 0.12);
+    --spatial-glass-border-dark: rgba(255, 255, 255, 0.12);
+    --spatial-specular-top: inset 0 1px 1px 0 rgba(255, 255, 255, 0.85);
+    --spatial-specular-dark: inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+
+    /* Volumetric Shadows */
+    --spatial-shadow-xs: 0 2px 8px rgba(11, 40, 75, 0.04);
+    --spatial-shadow-sm: 0 6px 18px -4px rgba(11, 40, 75, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    --spatial-shadow-md: 0 14px 34px -8px rgba(11, 40, 75, 0.11), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+    --spatial-shadow-lg: 0 24px 50px -12px rgba(11, 40, 75, 0.16), 0 8px 20px -4px rgba(0, 0, 0, 0.06);
+    --spatial-shadow-float: 0 32px 70px -14px rgba(11, 60, 109, 0.24), 0 14px 28px -6px rgba(0, 0, 0, 0.08);
+
+    /* Optical Blur */
+    --spatial-blur-sm: blur(12px) saturate(170%);
+    --spatial-blur-md: blur(20px) saturate(180%);
+    --spatial-blur-lg: blur(30px) saturate(190%);
+
+    /* Radii */
+    --spatial-radius-sm: 10px;
+    --spatial-radius-md: 16px;
+    --spatial-radius-lg: 24px;
+    --spatial-radius-xl: 32px;
+    --spatial-radius-pill: 9999px;
+
+    /* Typography */
+    --text-dark: #0f1c2e;
+    --text-muted: #5b6b82;
+    --text-light: #899bb1;
+
+    /* Transitions */
+    --spatial-spring: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    --spatial-fast: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   1. Atmospheric Spatial Body & Canvas
+   ========================================================================== */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    background-color: var(--spatial-bg) !important;
+    background-image: var(--spatial-canvas-gradient) !important;
+    background-attachment: scroll !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fixed ambient spatial orbs that glow subtly behind glass content */
+body::before {
+    content: '';
+    position: fixed;
+    top: -120px;
+    left: -100px;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(203, 163, 92, 0.18) 0%, rgba(203, 163, 92, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(40px);
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px;
+    right: -100px;
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(11, 60, 109, 0.14) 0%, rgba(11, 60, 109, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(50px);
+}
+
+/* ==========================================================================
+   2. Floating Spatial Header & Navigation Dock
+   ========================================================================== */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    width: 100%;
+    padding: 0;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(11, 40, 75, 0.12);
+}
+
+.top-bar {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    border-bottom: 2px solid var(--rv-gold) !important;
+    box-shadow: none !important;
+    padding: 12px 24px !important;
+    position: relative;
+    z-index: 2;
+}
+
+.college-logo-img {
+    height: 70px;
+    width: auto;
+    filter: drop-shadow(0 4px 8px rgba(11, 60, 109, 0.15));
+    transition: var(--spatial-spring);
+}
+
+.college-logo-img:hover {
+    transform: scale(1.03);
+}
+
+.college-title h1 {
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    color: var(--rv-navy) !important;
+    margin: 0 !important;
+    letter-spacing: 1.2px !important;
+}
+
+.college-title h2 {
+    font-size: 1.6rem !important;
+    font-weight: 900 !important;
+    color: var(--rv-navy) !important;
+    margin: 0 !important;
+    letter-spacing: -0.3px !important;
+    text-transform: uppercase !important;
+    background: linear-gradient(135deg, var(--rv-navy) 0%, #154c82 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.college-title p {
+    font-size: 0.82rem !important;
+    color: var(--text-muted) !important;
+    margin: 2px 0 0 0 !important;
+    font-weight: 500 !important;
+}
+
+.portal-brand {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-top: 6px !important;
+    padding: 3px 12px !important;
+    border-radius: var(--spatial-radius-pill) !important;
+    background: rgba(11, 60, 109, 0.08) !important;
+    border: 1px solid rgba(11, 60, 109, 0.15) !important;
+    color: var(--rv-navy) !important;
+    font-size: 0.72rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.8);
+}
+
+.portal-brand::before {
+    content: '';
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: var(--rv-gold) !important;
+    box-shadow: 0 0 8px var(--rv-gold) !important;
+}
+
+/* Spatial Floating Navbar Dock */
+.navbar {
+    background: var(--rv-navy) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    border-top: none !important;
+    box-shadow: none !important;
+    padding: 6px 16px !important;
+    position: relative;
+    z-index: 1;
+}
+
+.navbar .container,
+.student-navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.student-primary-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.82) !important;
+    padding: 8px 16px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    border-radius: var(--spatial-radius-pill) !important;
+    transition: var(--spatial-spring) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    position: relative;
+    border: 1px solid transparent !important;
+}
+
+.nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-link.active {
+    color: #0b2545 !important;
+    background: linear-gradient(135deg, var(--rv-gold) 0%, #dfb76c 100%) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(203, 163, 92, 0.4), inset 0 1px 1px rgba(255,255,255,0.7) !important;
+    font-weight: 700 !important;
+}
+
+.nav-link.active::after {
+    display: none !important; /* replaced by modern spatial pill capsule */
+}
+
+/* Spatial Menu Toggles & Dropdowns */
+.student-menu-toggle {
+    display: grid !important;
+    place-items: center !important;
+    width: 42px !important;
+    height: 42px !important;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: var(--spatial-blur-sm) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-sm) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: var(--spatial-radius-pill) !important;
+    cursor: pointer !important;
+    transition: var(--spatial-spring) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.student-menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: var(--rv-gold) !important;
+    transform: scale(1.05);
+}
+
+.student-action-menu,
+.dropdown-menu {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: var(--spatial-blur-lg) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-lg) !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    border-radius: var(--spatial-radius-md) !important;
+    box-shadow: var(--spatial-shadow-float), var(--spatial-specular-top) !important;
+    padding: 8px !important;
+    min-width: 220px !important;
+    margin-top: 8px !important;
+    animation: spatialPopup 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes spatialPopup {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.dropdown-item {
+    border-radius: var(--spatial-radius-sm) !important;
+    padding: 9px 14px !important;
+    font-weight: 600 !important;
+    color: var(--text-dark) !important;
+    transition: var(--spatial-fast) !important;
+}
+
+.dropdown-item:hover {
+    background: rgba(11, 60, 109, 0.08) !important;
+    color: var(--rv-navy) !important;
+    transform: translateX(4px);
+}
+
+.dropdown-item.text-danger:hover {
+    background: rgba(220, 53, 69, 0.08) !important;
+    color: #dc3545 !important;
+}
+
+/* ==========================================================================
+   3. Spatial Frosted Glass Sections & Cards
+   ========================================================================== */
+.glass-section {
+    background: var(--spatial-glass-bg) !important;
+    backdrop-filter: var(--spatial-blur-md) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-md) !important;
+    border-radius: var(--spatial-radius-lg) !important;
+    padding: 36px !important;
+    margin-bottom: 32px !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    box-shadow: var(--spatial-shadow-md), var(--spatial-specular-top) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: var(--spatial-spring) !important;
+}
+
+.glass-section::before {
+    display: none !important;
+}
+
+.glass-section:hover {
+    transform: translateY(-4px) translateZ(0) !important;
+    box-shadow: var(--spatial-shadow-lg), var(--spatial-specular-top) !important;
+    border-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.card,
+.card-simple {
+    background: var(--spatial-glass-bg) !important;
+    backdrop-filter: var(--spatial-blur-md) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-md) !important;
+    border-radius: var(--spatial-radius-lg) !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top) !important;
+    transition: var(--spatial-spring) !important;
+}
+
+.card:hover,
+.card-simple:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: var(--spatial-shadow-md), var(--spatial-specular-top) !important;
+}
+
+.section-header {
+    color: var(--rv-navy) !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    margin-bottom: 24px !important;
+    font-size: 1.4rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.section-header::before {
+    content: '' !important;
+    width: 24px !important;
+    height: 4px !important;
+    background: var(--rv-gold) !important;
+    border-radius: var(--spatial-radius-pill) !important;
+    margin-right: 12px !important;
+    box-shadow: 0 0 10px var(--rv-gold-glow) !important;
+}
+
+/* ==========================================================================
+   4. Spatial Icons & Highlights
+   ========================================================================== */
+.icon-circle {
+    width: 76px !important;
+    height: 76px !important;
+    background: linear-gradient(135deg, var(--rv-gold) 0%, #dfb76c 100%) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 20px !important;
+    color: var(--rv-navy) !important;
+    font-size: 2.1rem !important;
+    box-shadow: 0 10px 25px rgba(203, 163, 92, 0.35), inset 0 2px 3px rgba(255,255,255,0.7) !important;
+    transition: var(--spatial-spring) !important;
+    border: 2px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+.icon-circle:hover {
+    transform: scale(1.08) rotate(4deg) !important;
+    box-shadow: 0 14px 30px rgba(203, 163, 92, 0.45), inset 0 2px 3px rgba(255,255,255,0.8) !important;
+}
+
+/* ==========================================================================
+   5. Spatial Interactive Controls & Buttons
+   ========================================================================== */
+.btn {
+    border-radius: var(--spatial-radius-md) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.4px !important;
+    padding: 10px 22px !important;
+    transition: var(--spatial-spring) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn:active {
+    transform: scale(0.97) !important;
+}
+
+.btn-primary-custom,
+.btn-navy {
+    background: linear-gradient(180deg, #134e87 0%, var(--rv-navy) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 6px 18px rgba(11, 60, 109, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+}
+
+.btn-primary-custom:hover,
+.btn-navy:hover {
+    background: linear-gradient(180deg, #195ea3 0%, #0d447d 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 24px rgba(11, 60, 109, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn-gold,
+.btn-warning {
+    background: linear-gradient(180deg, #dfb76c 0%, var(--rv-gold) 100%) !important;
+    color: var(--rv-dark-navy) !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 6px 18px rgba(203, 163, 92, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn-gold:hover,
+.btn-warning:hover {
+    background: linear-gradient(180deg, #ecd18a 0%, #d8ae57 100%) !important;
+    color: var(--rv-dark-navy) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 24px rgba(203, 163, 92, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+}
+
+.btn-outline-light,
+.btn-outline-primary,
+.btn-outline-secondary {
+    backdrop-filter: var(--spatial-blur-sm) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-sm) !important;
+    border-radius: var(--spatial-radius-md) !important;
+    border-width: 1.5px !important;
+    transition: var(--spatial-spring) !important;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   6. Spatial Forms, Inputs & Floating Fields
+   ========================================================================== */
+.form-control,
+.form-select {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: var(--spatial-blur-sm) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-sm) !important;
+    border: 1px solid var(--spatial-glass-border-subtle) !important;
+    border-radius: var(--spatial-radius-md) !important;
+    padding: 12px 16px !important;
+    color: var(--text-dark) !important;
+    font-weight: 500 !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: var(--spatial-spring) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: var(--rv-gold) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 4px var(--rv-gold-glow), 0 4px 14px rgba(11, 60, 109, 0.08) !important;
+    transform: translateY(-1px);
+}
+
+.input-group-text {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid var(--spatial-glass-border-subtle) !important;
+    border-radius: var(--spatial-radius-md) 0 0 var(--spatial-radius-md) !important;
+    color: var(--rv-navy) !important;
+}
+
+.input-group > .form-control {
+    border-radius: 0 var(--spatial-radius-md) var(--spatial-radius-md) 0 !important;
+}
+
+/* ==========================================================================
+   7. Spatial Tables & Data Grids
+   ========================================================================== */
+.table-responsive {
+    background: var(--spatial-glass-bg) !important;
+    backdrop-filter: var(--spatial-blur-md) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-md) !important;
+    border-radius: var(--spatial-radius-lg) !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    box-shadow: var(--spatial-shadow-md), var(--spatial-specular-top) !important;
+    padding: 8px !important;
+    margin-bottom: 24px !important;
+    overflow: hidden !important;
+}
+
+.table {
+    margin-bottom: 0 !important;
+    color: var(--text-dark) !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+.table thead th {
+    background: rgba(11, 60, 109, 0.06) !important;
+    color: var(--rv-navy) !important;
+    font-weight: 800 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    padding: 16px 20px !important;
+    border: none !important;
+    border-bottom: 2px solid rgba(11, 60, 109, 0.12) !important;
+}
+
+.table tbody tr {
+    transition: var(--spatial-fast) !important;
+}
+
+.table tbody tr:hover {
+    background: rgba(203, 163, 92, 0.08) !important;
+    transform: scale(1.002);
+}
+
+.table tbody td {
+    padding: 16px 20px !important;
+    border-bottom: 1px solid rgba(11, 60, 109, 0.06) !important;
+    vertical-align: middle !important;
+    font-size: 0.92rem !important;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* ==========================================================================
+   8. Spatial Badges & Live Status Indicators
+   ========================================================================== */
+.badge {
+    border-radius: var(--spatial-radius-pill) !important;
+    padding: 6px 14px !important;
+    font-weight: 700 !important;
+    font-size: 0.76rem !important;
+    letter-spacing: 0.6px !important;
+    box-shadow: var(--spatial-shadow-xs) !important;
+    backdrop-filter: var(--spatial-blur-sm) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-sm) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.badge-selected,
+.badge.bg-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+.badge-pending,
+.badge.bg-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+}
+
+.badge-rejected,
+.badge.bg-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* ==========================================================================
+   9. Spatial Student Dashboard & Cards Enhancement
+   ========================================================================== */
+.student-dashboard-wrapper {
+    background: var(--spatial-glass-bg) !important;
+    backdrop-filter: var(--spatial-blur-lg) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-lg) !important;
+    border-radius: var(--spatial-radius-xl) !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    box-shadow: var(--spatial-shadow-lg), var(--spatial-specular-top) !important;
+    overflow: hidden;
+}
+
+.dashboard-sidebar,
+.bg-navy {
+    background: linear-gradient(165deg, #09203f 0%, #08102b 100%) !important;
+    position: relative;
+    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.border-gold {
+    border-color: var(--rv-gold) !important;
+}
+
+.text-gold {
+    color: var(--rv-gold) !important;
+}
+
+.bg-gold {
+    background: var(--rv-gold) !important;
+}
+
+.company-card {
+    background: var(--spatial-glass-bg) !important;
+    backdrop-filter: var(--spatial-blur-md) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-md) !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    border-radius: var(--spatial-radius-lg) !important;
+    box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top) !important;
+    transition: var(--spatial-spring) !important;
+}
+
+.company-card:hover {
+    transform: translateY(-6px) scale(1.01) !important;
+    box-shadow: var(--spatial-shadow-lg), var(--spatial-specular-top) !important;
+    border-color: rgba(203, 163, 92, 0.4) !important;
+}
+
+.stat-card {
+    background: var(--spatial-glass-bg) !important;
+    backdrop-filter: var(--spatial-blur-md) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-md) !important;
+    border-radius: var(--spatial-radius-lg) !important;
+    padding: 24px !important;
+    box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top) !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    transition: var(--spatial-spring) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: var(--spatial-shadow-md), var(--spatial-specular-top) !important;
+}
+
+/* ==========================================================================
+   10. Base Dashboard (`templates/base_dashboard.html`) Support
+   ========================================================================== */
+.sidebar {
+    background: rgba(8, 22, 44, 0.88) !important;
+    backdrop-filter: var(--spatial-blur-lg) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-lg) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: var(--spatial-shadow-lg) !important;
+}
+
+.sidebar .nav-link {
+    border-radius: var(--spatial-radius-md) !important;
+    margin: 4px 14px !important;
+    padding: 12px 18px !important;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.top-navbar {
+    background: rgba(255, 255, 255, 0.82) !important;
+    backdrop-filter: var(--spatial-blur-md) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-md) !important;
+    border-bottom: 1px solid var(--spatial-glass-border) !important;
+    box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top) !important;
+}
+
+.search-box input {
+    background: rgba(255, 255, 255, 0.75) !important;
+    backdrop-filter: var(--spatial-blur-sm) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-sm) !important;
+    border: 1px solid var(--spatial-glass-border-subtle) !important;
+    border-radius: var(--spatial-radius-pill) !important;
+}
+
+.search-box input:focus {
+    box-shadow: 0 0 0 4px var(--rv-gold-glow) !important;
+    border-color: var(--rv-gold) !important;
+}
+
+/* ==========================================================================
+   11. Spatial Alerts & Snackbars
+   ========================================================================== */
+.alert {
+    background: var(--spatial-glass-bg-elevated) !important;
+    backdrop-filter: var(--spatial-blur-md) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-md) !important;
+    border-radius: var(--spatial-radius-md) !important;
+    border: 1px solid var(--spatial-glass-border) !important;
+    box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top) !important;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   12. Spatial Progress Bars & Shimmers
+   ========================================================================== */
+.progress {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border-radius: var(--spatial-radius-pill) !important;
+    overflow: hidden !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+.progress-bar {
+    border-radius: var(--spatial-radius-pill) !important;
+    box-shadow: 0 0 12px rgba(203, 163, 92, 0.4) !important;
+}
+
+/* ==========================================================================
+   13. Spatial Footer & Main Content
+   ========================================================================== */
+.main-content {
+    padding: 40px 0 60px 0 !important;
+    min-height: 70vh !important;
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+.footer {
+    background: linear-gradient(180deg, #09172a 0%, #050d18 100%) !important;
+    backdrop-filter: var(--spatial-blur-lg) !important;
+    -webkit-backdrop-filter: var(--spatial-blur-lg) !important;
+    border-top: 4px solid var(--rv-gold) !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25) !important;
+    color: #d1d5db !important;
+    padding: 70px 0 35px !important;
+    margin-top: 60px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.footer h5 {
+    color: var(--rv-gold) !important;
+    font-weight: 800 !important;
+    margin-bottom: 22px !important;
+    text-transform: uppercase !important;
+    font-size: 1.05rem !important;
+    letter-spacing: 1px !important;
+}
+
+.footer-links {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+.footer-links li {
+    margin-bottom: 10px !important;
+}
+
+.footer-links a {
+    color: #94a3b8 !important;
+    text-decoration: none !important;
+    transition: var(--spatial-fast) !important;
+    font-weight: 500 !important;
+    display: inline-block !important;
+}
+
+.footer-links a:hover {
+    color: var(--rv-gold) !important;
+    transform: translateX(4px) !important;
+}
+
+.footer-bottom {
+    margin-top: 45px !important;
+    padding-top: 25px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    text-align: center !important;
+    color: #64748b !important;
+    font-size: 0.85rem !important;
+}
+
+/* ==========================================================================
+   14. Responsive, Accessible Spatial Surfaces
+   ========================================================================== */
+.table-responsive {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(11, 60, 109, 0.28);
+    border-radius: var(--spatial-radius-pill);
+}
+
+.glass-section,
+.card,
+.company-card,
+.stat-card {
+    background-image: radial-gradient(
+        circle at var(--spatial-pointer-x, 50%) var(--spatial-pointer-y, 0%),
+        rgba(255, 255, 255, 0.48),
+        transparent 48%
+    );
+}
+
+.table tbody tr:hover {
+    transform: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid var(--rv-gold) !important;
+    outline-offset: 3px !important;
+}
+
+.btn:disabled,
+.btn.disabled {
+    transform: none !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+}
+
+@media (max-width: 767.98px) {
+    .site-header {
+        padding: 0;
+    }
+
+    .top-bar .row {
+        flex-wrap: nowrap;
+    }
+
+    .top-bar .col-md-auto {
+        flex: 0 0 auto;
+        width: auto;
+    }
+
+    .top-bar .col {
+        min-width: 0;
+    }
+
+    .top-bar {
+        padding: 10px 12px !important;
+    }
+
+    .college-logo-img {
+        height: 54px;
+    }
+
+    .college-title h2 {
+        font-size: clamp(1rem, 4vw, 1.35rem) !important;
+    }
+
+    .college-title p {
+        font-size: 0.72rem !important;
+    }
+
+    .main-content {
+        padding: 24px 0 40px !important;
+    }
+
+    .content-area {
+        padding: 18px !important;
+    }
+
+    .glass-section {
+        padding: 24px !important;
+        margin-bottom: 22px !important;
+    }
+
+    .table-responsive {
+        padding: 4px !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .student-navbar-container {
+        flex-wrap: wrap;
+    }
+
+    .student-navbar-container .navbar-collapse {
+        flex-basis: 100%;
+    }
+
+    .student-primary-nav {
+        align-items: stretch;
+        gap: 0;
+        padding-top: 8px;
+    }
+
+    .student-primary-nav .nav-link {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .glass-section:hover,
+    .card:hover,
+    .card-simple:hover,
+    .company-card:hover,
+    .stat-card:hover,
+    .icon-circle:hover {
+        transform: none !important;
+    }
+}

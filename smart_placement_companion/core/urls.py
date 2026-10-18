@@ -5,7 +5,8 @@ from . import views
 
 urlpatterns = [
     # Entry System
-    path('', views.welcome_page, name='welcome'),
+    path('', views.home, name='home'),
+    path('welcome/', views.welcome_page, name='welcome'),
     path('home/', views.home, name='home'),
     path('login/student/', views.student_login, name='student_login'),
     path('student/change-password/', views.change_student_password, name='change_student_password'),

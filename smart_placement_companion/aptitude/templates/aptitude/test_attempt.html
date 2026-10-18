@@ -1,0 +1,99 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Aptitude Test — Question {{ question_number }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center bg-white rounded-4 shadow-sm p-3 mb-4 sticky-top" style="top: 1rem; z-index: 10;">
+        <div>
+            <div class="small text-muted text-uppercase fw-bold">Timed aptitude test</div>
+            <div class="fw-bold text-navy">Question {{ question_number }} of {{ attempt.total_questions }}</div>
+        </div>
+        <div id="countdown" class="badge bg-danger fs-5 px-3 py-2" role="timer" aria-live="polite">--:--</div>
+    </div>
+
+    <div class="row g-4">
+        <aside class="col-lg-3">
+            <div class="bg-white rounded-4 shadow-sm p-3">
+                <h2 class="h6 fw-bold text-navy">Questions</h2>
+                <div class="question-grid" aria-label="Question navigation">
+                    {% for item in question_nav %}
+                        <button type="submit" form="test-form" name="next_index" value="{{ item.index }}" class="question-number {% if item.current %}current{% elif item.answered %}answered{% endif %}" aria-label="Go to question {{ item.number }}{% if item.answered %}, answered{% endif %}" {% if item.current %}aria-current="step"{% endif %}>{{ item.number }}</button>
+                    {% endfor %}
+                </div>
+                <div class="small text-muted mt-3"><span class="legend answered-legend"></span> Answered <span class="legend current-legend ms-2"></span> Current</div>
+            </div>
+        </aside>
+
+        <main class="col-lg-9">
+            <form method="post" id="test-form" class="bg-white rounded-4 shadow-sm p-4 p-md-5">
+                {% csrf_token %}
+                <input type="hidden" name="question_index" value="{{ current_index }}">
+                <div class="d-flex gap-2 mb-3">
+                    <span class="badge bg-navy">{{ question.category }}</span>
+                    <span class="badge bg-warning text-dark">{{ question.difficulty }}</span>
+                </div>
+                <h1 class="h3 fw-bold text-navy mb-3">{{ question.title }}</h1>
+                <p class="lead mb-4">{{ question.prompt }}</p>
+
+                {% if question.options %}
+                    <div class="list-group mb-4">
+                        {% for option in question.options %}
+                            <label class="list-group-item d-flex align-items-start gap-3 rounded-3 mb-2">
+                                <input class="form-check-input mt-1" type="radio" name="selected_answer" value="{{ option }}" {% if selected_answer == option %}checked{% endif %}>
+                                <span>{{ option }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <label class="form-label fw-bold text-navy" for="free-answer">Your answer</label>
+                    <textarea id="free-answer" name="selected_answer" class="form-control mb-4" rows="5">{{ selected_answer }}</textarea>
+                {% endif %}
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <button type="submit" name="next_index" value="{{ current_index|add:'-1' }}" class="btn btn-outline-secondary" {% if current_index == 0 %}disabled{% endif %}>Previous</button>
+                    <div class="d-flex gap-2">
+                        {% if current_index < attempt.total_questions|add:'-1' %}
+                            <button type="submit" name="next_index" value="{{ current_index|add:'1' }}" class="btn btn-navy fw-bold">Save &amp; Next</button>
+                        {% endif %}
+                        <button type="submit" name="action" value="finish" class="btn btn-success fw-bold">Submit Test</button>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<style>
+    .text-navy { color: var(--rv-navy) !important; }
+    .bg-navy, .btn-navy { background-color: var(--rv-navy) !important; color: white !important; border: none; }
+    .question-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .45rem; }
+    .question-number { aspect-ratio: 1; border: 1px solid #d6dbe1; border-radius: .5rem; background: #fff; font-weight: 700; color: #495057; }
+    .question-number.current { background: var(--rv-navy); color: #fff; border-color: var(--rv-navy); }
+    .question-number.answered { background: #d1e7dd; border-color: #a3cfbb; color: #0f5132; }
+    .legend { display: inline-block; width: .65rem; height: .65rem; border-radius: 2px; background: #d1e7dd; }
+    .current-legend { background: var(--rv-navy); }
+</style>
+<script>
+    (() => {
+        let seconds = {{ remaining_seconds }};
+        const display = document.getElementById('countdown');
+        const form = document.getElementById('test-form');
+        const finish = form.querySelector('[name="action"][value="finish"]');
+        const tick = () => {
+            const minutes = Math.floor(seconds / 60);
+            const remaining = seconds % 60;
+            display.textContent = `${String(minutes).padStart(2, '0')}:${String(remaining).padStart(2, '0')}`;
+            if (seconds <= 60) display.classList.add('text-bg-warning');
+            if (seconds <= 0) {
+                finish.value = 'finish';
+                form.requestSubmit(finish);
+                return;
+            }
+            seconds -= 1;
+        };
+        tick();
+        window.setInterval(tick, 1000);
+    })();
+</script>
+{% endblock %}
