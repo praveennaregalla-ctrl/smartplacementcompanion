@@ -1,0 +1,40 @@
+{
+	"folders": [
+		{
+			"path": "../../.vscode"
+		},
+		{
+			"path": "../../__pycache__"
+		},
+		{
+			"path": "../../analytics"
+		},
+		{
+			"path": "../../api"
+		},
+		{
+			"path": "../../aptitude"
+		},
+		{
+			"path": "../../core"
+		},
+		{
+			"path": "../../interview"
+		},
+		{
+			"path": "../../media"
+		},
+		{
+			"path": "../../resume"
+		},
+		{
+			"path": "../../spc"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../templates"
+		}
+	]
+}
