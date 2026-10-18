@@ -173,62 +173,6 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
 
-    def test_student_home_shows_only_own_application_tracker(self):
-        company = Company.objects.create(
-            name='Tracker Company',
-            location='Bangalore',
-            package=8.0,
-            role='Software Engineer',
-            min_cgpa=7.0,
-            branch='CS',
-        )
-        placement = Placement.objects.create(
-            student=self.student,
-            company=company,
-            status='SHORTLISTED',
-            interview_round='Technical Round',
-        )
-        other_student = Student.objects.create(
-            name='Another Student',
-            email='another-student@example.com',
-            branch='CS',
-            cgpa=7.5,
-        )
-        other_company = Company.objects.create(
-            name='Other Tracker Company',
-            location='Mysore',
-            package=6.0,
-            role='Analyst',
-            min_cgpa=6.0,
-            branch='CS',
-        )
-        Placement.objects.create(
-            student=other_student,
-            company=other_company,
-            status='SELECTED',
-        )
-        session = self.client.session
-        session['role'] = 'student'
-        session['student_id'] = self.student.id
-        session.save()
-
-        response = self.client.get(reverse('home'))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'My Application Tracker')
-        self.assertContains(response, 'Tracker Company')
-        self.assertContains(response, 'Technical Round')
-        self.assertNotContains(response, '{{ total_students')
-        self.assertEqual(response.context['total_students'], Student.objects.count())
-        self.assertEqual(response.context['total_companies'], Company.objects.count())
-        expected_offers = Placement.objects.filter(status='SELECTED').count()
-        self.assertEqual(response.context['total_placements'], expected_offers)
-        self.assertEqual(
-            response.context['placement_percentage'],
-            round(expected_offers / Student.objects.count() * 100, 1),
-        )
-        self.assertEqual(list(response.context['my_recent_applications']), [placement])
-
     def test_hr_home_redirects_to_hr_dashboard(self):
         company = Company.objects.create(
             name='HR Route Company',
@@ -248,55 +192,6 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain, [(reverse('hr_dashboard'), 302)])
         self.assertContains(response, 'HR Route Company HR Dashboard')
-
-    def test_hr_management_pages_are_scoped_to_own_company(self):
-        company = Company.objects.create(
-            name='HR Managed Company',
-            location='Bangalore',
-            package=8.0,
-            role='Developer',
-            min_cgpa=6.0,
-            branch='CS',
-        )
-        other_company = Company.objects.create(
-            name='Another Company',
-            location='Mysore',
-            package=7.0,
-            role='Analyst',
-            min_cgpa=6.0,
-            branch='CS',
-        )
-        Placement.objects.create(student=self.student, company=company, status='PENDING')
-        Placement.objects.create(student=self.student, company=other_company, status='SELECTED')
-        session = self.client.session
-        session['role'] = 'hr'
-        session['company_id'] = company.id
-        session.save()
-
-        company_response = self.client.get(reverse('company_list'))
-        self.assertEqual(company_response.status_code, 200)
-        self.assertContains(company_response, 'HR Managed Company')
-        self.assertNotContains(company_response, 'Another Company')
-        self.assertNotContains(company_response, 'Students</a>')
-
-        placements_response = self.client.get(reverse('placements'))
-        self.assertEqual(placements_response.status_code, 200)
-        self.assertEqual(
-            [placement.company_id for placement in placements_response.context['placements']],
-            [company.id],
-        )
-        self.assertEqual(placements_response.context['applicant_count'], 1)
-
-        edit_response = self.client.get(reverse('edit_company', args=[company.id]))
-        self.assertEqual(edit_response.status_code, 200)
-        self.assertNotIn('hr_email', edit_response.context['form'].fields)
-        self.assertNotIn('hr_password', edit_response.context['form'].fields)
-        self.assertEqual(self.client.get(reverse('edit_company', args=[other_company.id])).status_code, 404)
-        self.assertEqual(self.client.get(reverse('company_detail', args=[other_company.id])).status_code, 404)
-        self.assertRedirects(
-            self.client.get(reverse('update_placement', args=[Placement.objects.get(company=other_company).id])),
-            reverse('hr_dashboard'),
-        )
 
     def test_admin_account_menu_pages_and_password_change(self):
         self.client.login(username='testuser', password='testpass123')
@@ -600,10 +495,10 @@ class ViewTests(TestCase):
 
     def test_student_home_dashboard_sections(self):
         """Test the student home page shows the requested dashboard sections after login."""
-        session = self.client.session
-        session['role'] = 'student'
-        session['student_id'] = self.student.id
-        session.save()
+        self.client.login(username='testuser', password='testpass123')
+        self.client.session['role'] = 'student'
+        self.client.session['student_id'] = self.student.id
+        self.client.session.save()
 
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
@@ -612,7 +507,7 @@ class ViewTests(TestCase):
         self.assertContains(response, 'Skills')
         self.assertContains(response, 'Certifications')
         self.assertContains(response, 'Coding Profiles')
-        self.assertContains(response, 'My Application Tracker')
+        self.assertContains(response, 'Placement History')
         self.assertContains(response, 'AI Suggestions')
         self.assertContains(response, 'Upcoming Companies')
         self.assertContains(response, 'Notifications')

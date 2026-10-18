@@ -176,22 +176,18 @@
         <div class="table-header">
             <h4 class="mb-0 fw-bold">
                 <i class="bi bi-briefcase-fill me-2"></i>
-                {% if is_hr %}Company Applicants{% else %}All Placements{% endif %}
+                All Placements
             </h4>
             <div class="d-flex gap-2 align-items-center">
-                <form method="get">
-                    <select class="form-select" name="status" aria-label="Filter placements by status" onchange="this.form.submit()" style="width: 160px; border: none;">
-                        <option value="">All Status</option>
-                        <option value="APPLIED" {% if current_status == 'APPLIED' %}selected{% endif %}>Applied</option>
-                        <option value="PENDING" {% if current_status == 'PENDING' %}selected{% endif %}>Pending</option>
-                        <option value="SHORTLISTED" {% if current_status == 'SHORTLISTED' %}selected{% endif %}>Shortlisted</option>
-                        <option value="SELECTED" {% if current_status == 'SELECTED' %}selected{% endif %}>Selected</option>
-                        <option value="REJECTED" {% if current_status == 'REJECTED' %}selected{% endif %}>Rejected</option>
-                    </select>
-                </form>
-                {% if is_hr %}
-                <a href="{% url 'hr_dashboard' %}" class="btn btn-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                {% endif %}
+                <select class="form-select" id="statusFilter" style="width: 160px; border: none;">
+                    <option value="">All Status</option>
+                    <option value="selected">Selected</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <a href="{% url 'placements' %}" class="btn btn-light btn-sm">
+                    <i class="bi bi-arrow-left-right"></i> Switch View
+                </a>
             </div>
         </div>
         
@@ -200,7 +196,7 @@
                 <thead style="background: #f8f9fa;">
                     <tr>
                         <th class="fw-semibold">Student</th>
-                        {% if not is_hr %}<th class="fw-semibold">Company</th>{% endif %}
+                        <th class="fw-semibold">Company</th>
                         <th class="fw-semibold">Role</th>
                         <th class="fw-semibold">Package</th>
                         <th class="fw-semibold">Status</th>
@@ -221,7 +217,7 @@
                                 </div>
                             </div>
                         </td>
-                        {% if not is_hr %}<td>{{ placement.company.name }}</td>{% endif %}
+                        <td>{{ placement.company.name }}</td>
                         <td>{{ placement.company.role }}</td>
                         <td>
                             <span class="fw-bold" style="color: #28a745;">
@@ -248,10 +244,10 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="{% if is_hr %}5{% else %}6{% endif %}" class="text-center py-5">
+                        <td colspan="6" class="text-center py-5">
                             <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
                             <h5 class="text-muted">No Placements Yet</h5>
-                            <p class="text-muted">{% if is_hr %}No applicants match this filter for your company.{% else %}Start by adding companies and students{% endif %}</p>
+                            <p class="text-muted">Start by adding companies and students</p>
                         </td>
                     </tr>
                     {% endfor %}
@@ -260,4 +256,22 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Filter by status
+    document.getElementById('statusFilter').addEventListener('change', function(e) {
+        const status = e.target.value;
+        const rows = document.querySelectorAll('.placement-row');
+        
+        rows.forEach(row => {
+            if (!status || row.dataset.status === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
 {% endblock %}

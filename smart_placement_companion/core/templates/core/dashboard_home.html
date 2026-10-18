@@ -8,22 +8,19 @@
 {% block extra_css %}
 <style>
     .stat-card {
-        background: var(--spatial-glass-bg);
-        backdrop-filter: var(--spatial-blur-md);
-        -webkit-backdrop-filter: var(--spatial-blur-md);
-        border-radius: var(--spatial-radius-lg);
+        background: white;
+        border-radius: 12px;
         padding: 24px;
-        box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top);
-        transition: var(--spatial-spring);
-        border: 1px solid var(--spatial-glass-border);
-        border-left: 5px solid;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid;
         position: relative;
         overflow: hidden;
     }
     
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: var(--spatial-shadow-md), var(--spatial-specular-top);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
     
     .stat-card::before {
@@ -33,7 +30,7 @@
         right: 0;
         width: 100px;
         height: 100px;
-        background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.2) 50%);
+        background: linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.1) 50%);
         border-radius: 0 0 0 100%;
     }
     
@@ -45,7 +42,7 @@
     .stat-icon {
         width: 60px;
         height: 60px;
-        border-radius: var(--spatial-radius-md);
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -53,32 +50,29 @@
         margin-bottom: 15px;
     }
     
-    .stat-icon.primary { background: rgba(15,59,87,0.12); color: #0f3b57; }
-    .stat-icon.success { background: rgba(40,167,69,0.12); color: #28a745; }
-    .stat-icon.warning { background: rgba(255,193,7,0.15); color: #b78103; }
-    .stat-icon.info { background: rgba(23,162,184,0.12); color: #17a2b8; }
+    .stat-icon.primary { background: rgba(15,59,87,0.1); color: #0f3b57; }
+    .stat-icon.success { background: rgba(40,167,69,0.1); color: #28a745; }
+    .stat-icon.warning { background: rgba(255,193,7,0.1); color: #ffc107; }
+    .stat-icon.info { background: rgba(23,162,184,0.1); color: #17a2b8; }
     
     .stat-value {
         font-size: 32px;
-        font-weight: 800;
+        font-weight: 700;
         margin-bottom: 5px;
-        color: var(--rv-navy);
+        color: #2c3e50;
     }
     
     .stat-label {
         font-size: 14px;
-        color: var(--text-muted);
-        font-weight: 600;
+        color: #7f8c8d;
+        font-weight: 500;
     }
     
     .chart-container {
-        background: var(--spatial-glass-bg);
-        backdrop-filter: var(--spatial-blur-md);
-        -webkit-backdrop-filter: var(--spatial-blur-md);
-        border-radius: var(--spatial-radius-lg);
+        background: white;
+        border-radius: 12px;
         padding: 24px;
-        box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top);
-        border: 1px solid var(--spatial-glass-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         margin-bottom: 24px;
     }
     
@@ -91,8 +85,8 @@
     
     .chart-title {
         font-size: 18px;
-        font-weight: 700;
-        color: var(--rv-navy);
+        font-weight: 600;
+        color: #2c3e50;
         margin: 0;
     }
     
@@ -102,43 +96,38 @@
         justify-content: center;
         gap: 10px;
         padding: 16px;
-        border-radius: var(--spatial-radius-pill);
-        font-weight: 700;
+        border-radius: 10px;
+        font-weight: 600;
         text-decoration: none;
-        transition: var(--spatial-spring);
+        transition: all 0.3s ease;
         margin-bottom: 12px;
     }
     
     .quick-action-btn:hover {
         transform: translateY(-3px);
-        box-shadow: var(--spatial-shadow-md);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
     }
     
     .table-card {
-        background: var(--spatial-glass-bg);
-        backdrop-filter: var(--spatial-blur-md);
-        -webkit-backdrop-filter: var(--spatial-blur-md);
-        border-radius: var(--spatial-radius-lg);
+        background: white;
+        border-radius: 12px;
         padding: 24px;
-        box-shadow: var(--spatial-shadow-sm), var(--spatial-specular-top);
-        border: 1px solid var(--spatial-glass-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
     .admin-module-card {
-        background: rgba(255, 255, 255, 0.65);
-        backdrop-filter: var(--spatial-blur-sm);
-        -webkit-backdrop-filter: var(--spatial-blur-sm);
-        border: 1px solid var(--spatial-glass-border);
-        border-radius: var(--spatial-radius-md);
+        background: #f8fafc;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
         padding: 16px;
         height: 100%;
-        transition: var(--spatial-spring);
+        transition: all 0.2s ease;
     }
 
     .admin-module-card:hover {
-        border-color: var(--rv-gold);
-        box-shadow: var(--spatial-shadow-md);
-        transform: translateY(-3px);
+        border-color: #0f3b57;
+        box-shadow: 0 6px 16px rgba(15,59,87,0.08);
+        transform: translateY(-2px);
     }
 
     .bg-navy { background-color: var(--rv-navy) !important; }
@@ -472,13 +461,9 @@
                                 Voice Mock Interview
                             </a>
 
-                            <a href="{% url 'aptitude:practice_session' %}" class="quick-action-btn" style="background: #ffc107; color: #2c3e50;">
+                            <a href="{% url 'interview:practice_session' %}" class="quick-action-btn" style="background: #ffc107; color: #2c3e50;">
                                 <i class="bi bi-clipboard-check fs-5"></i>
                                 Aptitude Practice
-                            </a>
-                            <a href="{% url 'aptitude:test_home' %}" class="quick-action-btn" style="background: #0b3c6d; color: white;">
-                                <i class="bi bi-stopwatch fs-5"></i>
-                                Take Timed Test
                             </a>
 
                             <a href="{% url 'analytics:dashboard' %}" class="quick-action-btn" style="background: #CBA35C; color: white;">

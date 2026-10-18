@@ -4,17 +4,19 @@
 
 {% block content %}
 <!-- Page Heading -->
-<h2 class="section-header">Students Directory</h2>
-
+<h2 style="color: #003366; font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem;">
+    Students
+</h2>
+<hr style="border-top: 3px solid #003366; margin: 1rem 0;">
 
 <!-- Add Student Button -->
 {% if request.session.role == 'admin' %}
 <div class="mb-4 text-end">
-    <a href="{% url 'add_student' %}" class="btn btn-navy shadow-sm rounded-pill me-2">
-        <i class="bi bi-person-plus-fill me-1"></i> Add New Student
+    <a href="{% url 'add_student' %}" class="btn btn-primary-custom me-2">
+        <i class="bi bi-person-plus-fill"></i> Add New Student
     </a>
-    <a href="{% url 'import_students' %}" class="btn btn-outline-secondary rounded-pill">
-        <i class="bi bi-file-earmark-spreadsheet me-1"></i> Import Students
+    <a href="{% url 'import_students' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-file-earmark-spreadsheet"></i> Import Students
     </a>
 </div>
 {% endif %}

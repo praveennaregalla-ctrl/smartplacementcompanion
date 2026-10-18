@@ -1,84 +1,41 @@
 {% extends 'core/base.html' %}
-{% load static %}
 
-{% block title %}Company Sign In - Smart Placement Companion{% endblock %}
-{% block body_class %}auth-page{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/auth.css' %}">{% endblock %}
+{% block title %}HR Login - Placement Portal{% endblock %}
 
 {% block content %}
-<div class="auth-shell">
-    <div class="auth-orb auth-orb-gold"></div>
-    <div class="auth-orb auth-orb-navy"></div>
-
-    <section class="auth-card" aria-labelledby="auth-title">
-        <div class="auth-card-header">
-            <div class="portal-badge hr">
-                <span class="portal-badge-dot"></span>
-                <span>COMPANY / HR ACCESS</span>
+<div class="row justify-content-center" style="min-height: calc(100vh - 300px); align-items: center;">
+    <div class="col-md-5">
+        <div class="card-simple glass-section">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-badge-fill" style="font-size: 3rem; color: #003366;"></i>
+                <h3 style="color: #003366; font-weight: 600; margin-top: 1rem;">HR Login</h3>
+                <p class="text-muted">Use your company HR credentials to manage job postings and interview scheduling.</p>
             </div>
-            <div class="auth-icon-circle hr">
-                <i class="bi bi-building"></i>
-            </div>
-            <h1 id="auth-title" class="auth-title">Recruiter Sign In</h1>
-            <p class="auth-subtitle">Corporate portal to verify eligible students &amp; manage interview rounds.</p>
+            <form method="POST">
+                {% csrf_token %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                <div class="mb-3">
+                    <label for="email" class="form-label">HR Email</label>
+                    <input type="email" name="email" class="form-control" id="email" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100 mb-3">
+                    <i class="bi bi-box-arrow-in-right"></i> LOGIN
+                </button>
+                <div class="text-center">
+                    <a href="{% url 'welcome' %}" class="text-decoration-none">
+                        <i class="bi bi-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </form>
         </div>
-
-        <form method="POST" class="auth-form" data-auth-form>
-            {% csrf_token %}
-            {% if messages %}
-                {% for message in messages %}
-                <div class="auth-error" role="alert">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    <span>{{ message }}</span>
-                </div>
-                {% endfor %}
-            {% endif %}
-
-            <div class="auth-field">
-                <label for="email">Work Email</label>
-                <div class="auth-input-wrap">
-                    <i class="bi bi-envelope auth-input-icon" aria-hidden="true"></i>
-                    <input type="email" name="email" id="email" placeholder="recruiter@company.com" autocomplete="username" required autofocus>
-                </div>
-            </div>
-
-            <div class="auth-field">
-                <label for="password">Password</label>
-                <div class="auth-input-wrap">
-                    <i class="bi bi-lock auth-input-icon" aria-hidden="true"></i>
-                    <input type="password" name="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
-                    <button class="auth-password-toggle" type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false">
-                        <i class="bi bi-eye" aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="auth-options">
-                <label class="auth-check">
-                    <input type="checkbox" name="remember_me" value="1">
-                    <span>Remember me</span>
-                </label>
-                <a href="mailto:info@tcegadag.edu?subject=HR%20password%20reset" class="auth-link">Forgot password?</a>
-            </div>
-
-            <button type="submit" class="auth-submit btn-hr">
-                <span>RECRUITER SIGN IN</span>
-                <i class="bi bi-person-badge" aria-hidden="true"></i>
-            </button>
-        </form>
-
-        <div class="auth-divider"><span>or switch portal</span></div>
-        <nav class="auth-portals" aria-label="Other sign-in portals">
-            <a href="{% url 'student_login' %}"><i class="bi bi-mortarboard-fill"></i> Student Portal</a>
-            <a href="{% url 'login' %}"><i class="bi bi-shield-lock"></i> Admin Portal</a>
-        </nav>
-        
-        <p class="auth-footer">Need corporate access? <a href="mailto:info@tcegadag.edu?subject=Placement%20portal%20account%20access">Contact placement office</a></p>
-        <a href="{% url 'welcome' %}" class="auth-back"><i class="bi bi-arrow-left"></i> Back to portal selection</a>
-    </section>
+    </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/auth.js' %}" defer></script>
 {% endblock %}

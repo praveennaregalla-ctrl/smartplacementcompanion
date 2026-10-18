@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,8 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Spatial UI Theme -->
-    <link rel="stylesheet" href="{% static 'css/spatial-theme.css' %}">
     
     <style>
         :root {
@@ -564,15 +561,9 @@
             </div>
 
             <div class="nav-item">
-                <a href="{% url 'aptitude:practice_session' %}" class="nav-link {% if request.path == '/aptitude/' or '/aptitude/practice/' in request.path %}active{% endif %}">
+                <a href="{% url 'interview:practice_session' %}" class="nav-link {% if '/interview/practice-session/' in request.path or '/interview/practice/' in request.path %}active{% endif %}">
                     <i class="bi bi-clipboard-check"></i>
                     <span>Aptitude Practice</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="{% url 'aptitude:test_home' %}" class="nav-link {% if '/aptitude/test/' in request.path %}active{% endif %}">
-                    <i class="bi bi-stopwatch"></i>
-                    <span>Timed Test</span>
                 </a>
             </div>
             
@@ -643,8 +634,6 @@
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Spatial UI Interactive Scripts -->
-    <script src="{% static 'js/spatial-ui.js' %}"></script>
     
     {% block extra_js %}{% endblock %}
 </body>
