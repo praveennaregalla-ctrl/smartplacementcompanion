@@ -6,100 +6,93 @@
 {% block content %}
 
 <!-- Hero Carousel Section -->
-<div class="p-0 overflow-hidden mb-5">
-    <div id="homepageCarousel" class="carousel slide carousel-fade shadow-sm" data-bs-ride="carousel"
+<div class="home-hero-carousel p-0 overflow-hidden mb-5" style="border-radius: var(--spatial-radius-xl); box-shadow: var(--spatial-shadow-lg); border: 1px solid var(--spatial-glass-border);">
+    <div id="homepageCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel"
         data-bs-interval="6000">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="0" class="active rounded-pill" style="height: 6px;"></button>
+            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="1" class="rounded-pill" style="height: 6px;"></button>
+            <button type="button" data-bs-target="#homepageCarousel" data-bs-slide-to="2" class="rounded-pill" style="height: 6px;"></button>
         </div>
 
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <div class="hero-overlay"
-                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, var(--rv-navy), transparent); opacity: 0.8; z-index: 1;">
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to right, rgba(11, 60, 109, 0.9) 0%, rgba(8, 16, 43, 0.4) 100%); z-index: 1;">
                 </div>
                 <img src="{% static 'images/slide1.jpg' %}" class="d-block w-100" alt="Campus"
+                    fetchpriority="high" decoding="async"
                     style="height: 600px; object-fit: cover;"
                     onerror="this.src='https://images.unsplash.com/photo-1541339907198-e08756ebafe3?w=1600&h=600&fit=crop';">
                 <div class="carousel-caption d-none d-md-block text-start"
-                    style="z-index: 2; left: 10%; bottom: 25%; max-width: 750px;">
-                    <span class="badge bg-warning text-dark mb-3 px-3 py-2 fw-bold text-uppercase"
-                        style="letter-spacing: 1px; background-color: var(--rv-gold) !important;">Admissions Open
-                        2026-27</span>
+                    style="z-index: 2; left: 8%; bottom: 22%; max-width: 750px;">
+                    <span class="badge mb-3 px-3 py-2 fw-bold text-uppercase rounded-pill"
+                        style="letter-spacing: 1px; background: linear-gradient(135deg, var(--rv-gold) 0%, #dfb76c 100%); color: var(--rv-dark-navy); box-shadow: 0 4px 14px rgba(203, 163, 92, 0.4);">Admissions Open 2026-27</span>
                     <h2 class="display-3 fw-black mb-3 text-white"
-                        style="text-shadow: 2px 2px 10px rgba(0,0,0,0.5); font-weight: 900;">STSKK'S TONTADARYA COLLEGE
-                        OF ENGINEERING</h2>
-                    <p class="lead mb-4 fw-medium text-light fs-4">Empowering generations through technical innovation
-                        and academic excellence in Gadag.</p>
+                        style="text-shadow: 0 4px 20px rgba(0,0,0,0.5); font-weight: 900; letter-spacing: -0.5px;">STSKK'S TONTADARYA COLLEGE OF ENGINEERING</h2>
+                    <p class="lead mb-4 fw-medium text-light fs-4" style="text-shadow: 0 2px 10px rgba(0,0,0,0.4);">Empowering generations through technical innovation and academic excellence in Gadag.</p>
                     <div class="d-flex gap-3">
                         {% if request.session.role == 'student' %}
-                        <a href="{% url 'home' %}" class="btn btn-lg px-5 fw-bold shadow-lg text-white"
-                            style="background-color: var(--rv-gold); border: none; border-radius: 0;">STUDENT PORTAL</a>
+                        <a href="{% url 'home' %}" class="btn btn-gold btn-lg px-5 fw-bold shadow-lg rounded-pill">STUDENT PORTAL</a>
                         {% else %}
-                        <a href="{% url 'student_login' %}" class="btn btn-lg px-5 fw-bold shadow-lg text-white"
-                            style="background-color: var(--rv-gold); border: none; border-radius: 0;">STUDENT PORTAL</a>
+                        <a href="{% url 'student_login' %}" class="btn btn-gold btn-lg px-5 fw-bold shadow-lg rounded-pill">STUDENT PORTAL</a>
                         {% endif %}
-                        <a href="{% url 'company_list' %}" class="btn btn-outline-light btn-lg px-5 fw-bold"
-                            style="border-radius: 0;">OUR RECRUITERS</a>
+                        <a href="{% url 'company_list' %}" class="btn btn-outline-light btn-lg px-5 fw-bold rounded-pill" style="backdrop-filter: blur(10px);">OUR RECRUITERS</a>
                     </div>
                 </div>
             </div>
 
             <div class="carousel-item">
                 <div class="hero-overlay"
-                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(8, 16, 43, 0.7); z-index: 1;">
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(8, 16, 43, 0.75); z-index: 1;">
                 </div>
                 <img src="{% static 'images/slide2.jpg' %}" class="d-block w-100" alt="Excellence"
+                    loading="lazy" decoding="async"
                     style="height: 600px; object-fit: cover;"
                     onerror="this.src='https://images.unsplash.com/photo-1523050335392-9bef867a0013?w=1600&h=600&fit=crop';">
-                <div class="carousel-caption d-none d-md-block text-center" style="z-index: 2; bottom: 35%;">
-                    <h2 class="display-3 fw-black mb-3 text-white" style="font-weight: 900;">INNOVATION POWERED BY
-                        KNOWLEDGE</h2>
-                    <p class="lead mb-4 fw-medium fs-4">Preparing global leaders since 25+ years.</p>
-                    <a href="#" class="btn btn-warning btn-lg px-5 fw-bold"
-                        style="background-color: var(--rv-gold); border: none; border-radius: 0;">LEARN MORE</a>
+                <div class="carousel-caption d-none d-md-block text-center" style="z-index: 2; bottom: 32%;">
+                    <h2 class="display-3 fw-black mb-3 text-white" style="font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 20px rgba(0,0,0,0.5);">INNOVATION POWERED BY KNOWLEDGE</h2>
+                    <p class="lead mb-4 fw-medium fs-4 text-light">Preparing global leaders since 25+ years.</p>
+                    <a href="#" class="btn btn-gold btn-lg px-5 fw-bold rounded-pill shadow-lg">LEARN MORE</a>
                 </div>
             </div>
 
             <div class="carousel-item">
                 <div class="hero-overlay"
-                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to left, var(--rv-navy), transparent); opacity: 0.8; z-index: 1;">
+                    style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to left, rgba(11, 60, 109, 0.9) 0%, rgba(8, 16, 43, 0.4) 100%); z-index: 1;">
                 </div>
                 <img src="{% static 'images/slide3.jpg' %}" class="d-block w-100" alt="Future"
+                    loading="lazy" decoding="async"
                     style="height: 600px; object-fit: cover;"
                     onerror="this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600&h=600&fit=crop';">
                 <div class="carousel-caption d-none d-md-block text-end"
-                    style="z-index: 2; right: 10%; bottom: 25%; max-width: 750px;">
-                    <h2 class="display-3 fw-black mb-3 text-white" style="font-weight: 900;">SHAPING THE FUTURE READY
-                        ENGINEERS</h2>
-                    <p class="lead mb-4 fw-medium text-light fs-4">Join our community of innovators and problem solvers
-                        today.</p>
-                    <a href="{% url 'login' %}" class="btn btn-lg px-5 fw-bold shadow-lg text-white"
-                        style="background-color: var(--rv-gold); border: none; border-radius: 0;">GET STARTED</a>
+                    style="z-index: 2; right: 8%; bottom: 22%; max-width: 750px;">
+                    <h2 class="display-3 fw-black mb-3 text-white" style="font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 4px 20px rgba(0,0,0,0.5);">SHAPING FUTURE-READY ENGINEERS</h2>
+                    <p class="lead mb-4 fw-medium text-light fs-4" style="text-shadow: 0 2px 10px rgba(0,0,0,0.4);">Join our community of innovators and problem solvers today.</p>
+                    <a href="{% url 'login' %}" class="btn btn-gold btn-lg px-5 fw-bold shadow-lg rounded-pill">GET STARTED</a>
                 </div>
             </div>
         </div>
 
         <button class="carousel-control-prev" type="button" data-bs-target="#homepageCarousel" data-bs-slide="prev"
             style="z-index: 3;">
-            <span class="carousel-control-prev-icon"></span>
+            <span class="carousel-control-prev-icon p-3 rounded-circle" style="background-color: rgba(0,0,0,0.35); backdrop-filter: blur(8px);"></span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#homepageCarousel" data-bs-slide="next"
             style="z-index: 3;">
-            <span class="carousel-control-next-icon"></span>
+            <span class="carousel-control-next-icon p-3 rounded-circle" style="background-color: rgba(0,0,0,0.35); backdrop-filter: blur(8px);"></span>
         </button>
     </div>
 </div>
 
 <!-- RVU Inspired About Us Section -->
-<div class="container mb-5 py-5">
+<div class="container mb-5 py-4">
     <div class="row align-items-center">
         <div class="col-lg-5 mb-4 mb-lg-0">
             <div class="position-relative">
                 <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=600&h=600&fit=crop"
-                    class="img-fluid rounded-0 shadow-lg" style="border-left: 12px solid var(--rv-gold);"
+                    loading="lazy" decoding="async"
+                    class="img-fluid rounded-4 shadow-lg" style="border: 1px solid var(--spatial-glass-border);"
                     alt="College Campus">
             </div>
         </div>
@@ -130,8 +123,8 @@
                 </div>
             </div>
 
-            <a href="#" class="btn py-3 px-5 fw-bold text-white shadow-lg"
-                style="background: var(--rv-navy); border-radius: 0; letter-spacing: 1px;">DISCOVER MORE <i
+            <a href="#" class="btn btn-navy py-3 px-5 fw-bold text-white shadow-lg rounded-pill"
+                style="letter-spacing: 0.8px;">DISCOVER MORE <i
                     class="bi bi-arrow-right ms-2"></i></a>
         </div>
     </div>
@@ -139,7 +132,7 @@
 
 <!-- Premium Student Dashboard -->
 {% if request.session.role == 'student' or request.session.student_id %}
-<div class="container mb-5 mt-n4">
+<div class="container mb-5">
     <div class="student-dashboard-wrapper shadow-lg rounded-4 overflow-hidden border-0" data-aos="fade-up">
         <div class="row g-0">
             <!-- Left Sidebar: Profile Summary -->
@@ -147,7 +140,7 @@
                 <div class="d-flex align-items-center mb-4">
                     <div class="profile-pic-container me-3">
                         {% if student.profile_picture %}
-                            <img src="{{ student.profile_picture.url }}" alt="{{ student.name }}" class="rounded-circle border border-3 border-gold shadow" style="width: 80px; height: 80px; object-fit: cover;">
+                            <img src="{{ student.profile_picture.url }}" alt="{{ student.name }}" loading="lazy" decoding="async" class="rounded-circle border border-3 border-gold shadow" style="width: 80px; height: 80px; object-fit: cover;">
                         {% else %}
                             <div class="rounded-circle bg-gold text-navy d-flex align-items-center justify-content-center shadow" style="width: 80px; height: 80px; font-size: 2rem; font-weight: 900;">
                                 {{ student.name|slice:":1" }}
@@ -185,13 +178,14 @@
                     <a href="{% url 'student_profile' %}" class="btn btn-outline-light border-2 fw-bold">VIEW FULL PROFILE</a>
                     <a href="{% url 'resume:analyze_resume' %}" class="btn btn-gold text-navy fw-black">RE-ANALYZE RESUME</a>
                     <a href="{% url 'interview:interview_preparation' %}" class="btn btn-outline-primary border-2 fw-bold">VOICE MOCK INTERVIEW</a>
-                    <a href="{% url 'interview:practice_session' %}" class="btn btn-outline-warning border-2 fw-bold">APTITUDE PRACTICE</a>
+                    <a href="{% url 'aptitude:practice_session' %}" class="btn btn-outline-warning border-2 fw-bold">APTITUDE PRACTICE</a>
+                    <a href="{% url 'aptitude:test_home' %}" class="btn btn-warning border-2 fw-bold">TAKE TIMED TEST</a>
                 </div>
             </div>
 
             <!-- Right Content Area -->
             <div class="col-lg-8 bg-white p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="career-overview-header d-flex justify-content-between align-items-center mb-4">
                     <h3 class="fw-black text-navy mb-0" style="font-weight: 900;">Career Overview</h3>
                     <div class="dropdown">
                         <button class="btn btn-light btn-sm fw-bold border" type="button" data-bs-toggle="dropdown">
@@ -265,15 +259,84 @@
                         </ul>
                     </div>
 
-                    <div class="col-md-6">
-                        <h6 class="fw-bold text-navy mb-3 text-uppercase small" style="letter-spacing: 1px;">Placement History</h6>
-                        {% if my_recent_applications %}
-                            {% for placement in my_recent_applications %}
-                                <div class="small mb-2"><strong>{{ placement.company.name }}</strong> — {{ placement.status }}</div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="alert alert-secondary border-0 shadow-sm rounded-3 py-2 px-3 mb-2">No placement activity yet.</div>
-                        {% endif %}
+                    <div class="col-12">
+                        <div class="application-tracker p-3 p-md-4 rounded-4 border">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                                <div>
+                                    <h5 class="fw-bold text-navy mb-1"><i class="bi bi-signpost-split-fill me-2"></i>My Application Tracker</h5>
+                                    <p class="small text-muted mb-0">Track company applications, current stages and interview schedules.</p>
+                                </div>
+                                <a href="{% url 'my_applications' %}" class="btn btn-outline-primary btn-sm fw-bold">
+                                    View all {{ my_applications_count }} application{{ my_applications_count|pluralize }}
+                                    <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                            {% if my_recent_applications %}
+                                <div class="table-responsive">
+                                    <table class="table align-middle mb-0 application-tracker-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Company &amp; role</th>
+                                                <th>Status / stage</th>
+                                                <th>Interview</th>
+                                                <th>Last updated</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for placement in my_recent_applications %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{% url 'company_detail' placement.company_id %}" class="fw-bold text-navy text-decoration-none">{{ placement.company.name }}</a>
+                                                        <div class="small text-muted">{{ placement.company.role }}</div>
+                                                        <div class="small text-muted">Applied {{ placement.created_at|date:"M j, Y" }}</div>
+                                                    </td>
+                                                    <td>
+                                                        {% if placement.status == 'SELECTED' %}
+                                                            <span class="badge bg-success">Selected</span>
+                                                            <div class="small text-success mt-1"><i class="bi bi-check-circle-fill me-1"></i>Offer / selection stage</div>
+                                                        {% elif placement.status == 'REJECTED' %}
+                                                            <span class="badge bg-danger">Rejected</span>
+                                                            <div class="small text-muted mt-1">Application closed</div>
+                                                        {% elif placement.status == 'SHORTLISTED' %}
+                                                            <span class="badge bg-info text-dark">Shortlisted</span>
+                                                            <div class="small text-muted mt-1"><i class="bi bi-arrow-right-circle me-1"></i>Interview stage</div>
+                                                        {% elif placement.status == 'APPLIED' %}
+                                                            <span class="badge bg-warning text-dark">Applied</span>
+                                                            <div class="small text-muted mt-1"><i class="bi bi-hourglass-split me-1"></i>Awaiting review</div>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary">{{ placement.get_status_display }}</span>
+                                                            <div class="small text-muted mt-1">Application received</div>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if placement.interview_round %}
+                                                            <div class="fw-semibold small">{{ placement.interview_round }}</div>
+                                                        {% endif %}
+                                                        {% if placement.interview_date %}
+                                                            <div class="small text-muted">{{ placement.interview_date|date:"M j, Y" }}{% if placement.interview_time %} · {{ placement.interview_time|time:"g:i A" }}{% endif %}</div>
+                                                        {% elif placement.status == 'SHORTLISTED' and not placement.interview_round %}
+                                                            <span class="small text-muted">Schedule pending</span>
+                                                        {% else %}
+                                                            <span class="small text-muted">Not scheduled</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="small text-muted">{{ placement.updated_at|date:"M j, Y" }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% if my_applications_count > my_recent_applications|length %}
+                                    <div class="small text-muted mt-3">Showing the 5 most recently updated applications.</div>
+                                {% endif %}
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="bi bi-clipboard2-check display-6 text-muted"></i>
+                                    <p class="text-muted mt-2 mb-3">You have not applied to any companies yet.</p>
+                                    <a href="{% url 'company_list' %}" class="btn btn-navy btn-sm fw-bold">Browse companies</a>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
 
                     <div class="col-md-6">
@@ -322,13 +385,64 @@
 </div>
 
 <style>
+    @media (max-width: 767.98px) {
+        .home-hero-carousel {
+            margin-bottom: 1.5rem !important;
+        }
+
+        .home-hero-carousel .carousel-item > img {
+            height: 340px !important;
+        }
+
+        .home-hero-carousel .carousel-caption {
+            display: block !important;
+            left: 7% !important;
+            right: 7% !important;
+            bottom: 8% !important;
+            max-width: none !important;
+            text-align: center !important;
+        }
+
+        .home-hero-carousel .carousel-caption h2 {
+            font-size: clamp(1.25rem, 6vw, 1.8rem) !important;
+            line-height: 1.15;
+        }
+
+        .home-hero-carousel .carousel-caption p {
+            font-size: 0.95rem !important;
+            line-height: 1.4;
+        }
+
+        .home-hero-carousel .carousel-caption .d-flex {
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem !important;
+        }
+
+        .home-hero-carousel .carousel-caption .btn {
+            padding: 0.55rem 0.85rem !important;
+            font-size: 0.75rem;
+        }
+
+        .career-overview-header {
+            align-items: flex-start !important;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .ticker-logo {
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+    }
+
     .bg-navy { background-color: var(--rv-navy) !important; }
     .text-gold { color: var(--rv-gold) !important; }
     .btn-gold { background-color: var(--rv-gold) !important; border-color: var(--rv-gold) !important; color: var(--rv-navy) !important; }
     .fw-black { font-weight: 900 !important; }
     
     .student-dashboard-wrapper {
-        margin-top: -80px;
+        margin-top: 0;
         position: relative;
         z-index: 10;
         background: #fff;
@@ -344,6 +458,21 @@
     .transition-hover:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+
+    .application-tracker {
+        background: #fbfcfe;
+        border-color: #e5eaf0 !important;
+    }
+    .application-tracker-table thead th {
+        color: #6b7280;
+        font-size: .72rem;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        border-bottom-color: #e5eaf0;
+    }
+    .application-tracker-table tbody tr:last-child td {
+        border-bottom: 0;
     }
 
     .interview-card {
@@ -368,8 +497,7 @@
         <div class="col-md-3">
             <div class="glass-section h-100 p-5">
                 <div class="icon-circle"><i class="bi bi-people-fill"></i></div>
-                <h3 class="display-6 fw-black mb-1" style="color: var(--rv-navy); font-weight: 900;">{{ total_students
-                    }}</h3>
+                <h3 class="display-6 fw-black mb-1" style="color: var(--rv-navy); font-weight: 900;">{{ total_students }}</h3>
                 <p class="text-uppercase small fw-bold text-muted mb-0">Registered Students</p>
             </div>
         </div>
@@ -384,8 +512,7 @@
         <div class="col-md-3">
             <div class="glass-section h-100 p-5">
                 <div class="icon-circle"><i class="bi bi-briefcase-fill"></i></div>
-                <h3 class="display-6 fw-black mb-1" style="color: var(--rv-navy); font-weight: 900;">{{ total_placements
-                    }}</h3>
+                <h3 class="display-6 fw-black mb-1" style="color: var(--rv-navy); font-weight: 900;">{{ total_placements }}</h3>
                 <p class="text-uppercase small fw-bold text-muted mb-0">Offers Made</p>
             </div>
         </div>

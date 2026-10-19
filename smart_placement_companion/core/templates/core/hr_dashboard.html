@@ -4,15 +4,42 @@
 
 {% block content %}
 <div class="container mb-5 mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
             <span class="badge bg-gold text-navy fw-bold text-uppercase letter-spacing-1 mb-2">HR Portal</span>
             <h2 class="fw-black text-navy mb-1">{{ company.name }} HR Dashboard</h2>
-            <p class="text-muted">Manage job openings, eligible students, interview schedules, and selection status.</p>
+            <p class="text-muted mb-0">Manage your company profile, applicants, interview schedules, and selection status.</p>
         </div>
-        <div class="d-flex gap-2">
-            <span class="badge bg-navy text-white py-2 px-3">Eligible Students: {{ eligible_students_count }}</span>
-            <span class="badge bg-success text-white py-2 px-3">Upcoming Interviews: {{ upcoming_interviews|length }}</span>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'company_list' %}" class="btn btn-outline-primary fw-bold"><i class="bi bi-building me-2"></i>Company Profile</a>
+            <a href="{% url 'placements' %}" class="btn btn-navy text-white fw-bold"><i class="bi bi-people me-2"></i>Manage Applicants</a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="p-3 rounded-4 bg-white border shadow-sm h-100">
+                <div class="small text-muted text-uppercase fw-bold">Eligible students</div>
+                <div class="h2 fw-black text-navy mb-0">{{ eligible_students_count }}</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="p-3 rounded-4 bg-white border shadow-sm h-100">
+                <div class="small text-muted text-uppercase fw-bold">Applicants</div>
+                <div class="h2 fw-black text-navy mb-0">{{ applicant_count }}</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="p-3 rounded-4 bg-white border shadow-sm h-100">
+                <div class="small text-muted text-uppercase fw-bold">Shortlisted</div>
+                <div class="h2 fw-black text-info mb-0">{{ status_counts.SHORTLISTED|default:0 }}</div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="p-3 rounded-4 bg-white border shadow-sm h-100">
+                <div class="small text-muted text-uppercase fw-bold">Upcoming interviews</div>
+                <div class="h2 fw-black text-success mb-0">{{ upcoming_interviews|length }}</div>
+            </div>
         </div>
     </div>
 
@@ -69,7 +96,10 @@
     </div>
 
     <div class="glass-section p-4 bg-white border shadow-sm rounded-4">
-        <h5 class="fw-black text-navy mb-4">All Eligible Students</h5>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <h5 class="fw-black text-navy mb-0">Applicants for {{ company.name }}</h5>
+            <a href="{% url 'placements' %}" class="btn btn-sm btn-outline-primary fw-bold">View all applicants <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
         <div class="table-responsive">
             <table class="table table-striped align-middle">
                 <thead>
