@@ -4,59 +4,66 @@
 {% block title %}Welcome - Smart Placement Companion{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
-    <div class="col-md-10 text-center mb-5">
-        <h1 class="display-4 fw-bold" style="color: var(--rv-navy); text-transform: uppercase; letter-spacing: 2px;">
-            Welcome to Smart Placement Companion
+<div class="row justify-content-center align-items-center py-4" style="min-height: 65vh;">
+    <div class="col-md-11 text-center mb-5">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background: rgba(203, 163, 92, 0.15); border: 1px solid rgba(203, 163, 92, 0.35);">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--rv-gold); box-shadow: 0 0 8px var(--rv-gold);"></span>
+            <span class="small fw-bold text-uppercase" style="color: var(--rv-navy); letter-spacing: 1.5px; font-size: 0.75rem;">Next-Gen Placement Suite</span>
+        </div>
+        <h1 class="display-4 fw-black" style="color: var(--rv-navy); font-weight: 900; letter-spacing: -0.5px;">
+            Smart Placement Companion
         </h1>
-        <p class="lead text-muted">A comprehensive portal for students and administration to manage career opportunities.</p>
-        <div style="width: 100px; height: 5px; background: var(--rv-gold); margin: 20px auto;"></div>
+        <p class="lead text-muted mx-auto" style="max-width: 650px;">
+            Unified intelligent gateway for students, recruiters, and placement administration.
+        </p>
     </div>
 
-    <div class="col-md-4">
-        <div class="glass-section text-center h-100 mb-4 p-5" style="transition: transform 0.3s ease;">
-            <div class="icon-circle">
-                <i class="bi bi-mortarboard-fill"></i>
+    <!-- Student Portal Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="glass-section welcome-portal-card text-center h-100 p-5 d-flex flex-column justify-content-between position-relative">
+            <div>
+                <div class="icon-circle mb-4">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <h3 class="fw-bold mb-3" style="color: var(--rv-navy); letter-spacing: 0.5px;">STUDENT ACCESS</h3>
+                <p class="text-muted mb-4 small" style="line-height: 1.6;">Access your personal placement profile, AI resume analyzer, mock interviews, and active company drives.</p>
             </div>
-            <h3 class="fw-bold mb-4" style="color: var(--rv-navy);">STUDENT ACCESS</h3>
-            <p class="text-muted mb-4">Access your personal placement profile, analyze your resume, and explore career opportunities with top companies.</p>
-            <a href="{% url 'student_login' %}" class="btn btn-lg w-100 fw-bold" style="background-color: var(--rv-navy); color: white; border-radius: 4px;">
+            <a href="{% url 'student_login' %}" class="btn btn-navy btn-lg w-100 fw-bold py-3 shadow-sm rounded-pill">
                 STUDENT LOGIN <i class="bi bi-arrow-right ms-2"></i>
             </a>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="glass-section text-center h-100 mb-4 p-5" style="transition: transform 0.3s ease;">
-            <div class="icon-circle" style="background: var(--rv-navy); color: var(--rv-gold);">
-                <i class="bi bi-person-badge-fill"></i>
+    <!-- Admin Portal Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="glass-section welcome-portal-card text-center h-100 p-5 d-flex flex-column justify-content-between position-relative">
+            <div>
+                <div class="icon-circle mb-4" style="background: linear-gradient(135deg, var(--rv-navy) 0%, #154c82 100%); color: var(--rv-gold); box-shadow: 0 10px 25px rgba(11, 60, 109, 0.35);">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <h3 class="fw-bold mb-3" style="color: var(--rv-navy); letter-spacing: 0.5px;">ADMINISTRATION</h3>
+                <p class="text-muted mb-4 small" style="line-height: 1.6;">Administrative command center for drive management, student records, company listings, and analytics.</p>
             </div>
-            <h3 class="fw-bold mb-4" style="color: var(--rv-navy);">ADMINISTRATION</h3>
-            <p class="text-muted mb-4">Secure access for administrative tasks, student management, company coordination, and placement analytics.</p>
-            <a href="{% url 'login' %}" class="btn btn-lg w-100 fw-bold" style="background-color: var(--rv-gold); color: white; border-radius: 4px;">
+            <a href="{% url 'login' %}" class="btn btn-gold btn-lg w-100 fw-bold py-3 shadow-sm rounded-pill">
                 ADMIN LOGIN <i class="bi bi-shield-lock ms-2"></i>
             </a>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="glass-section text-center h-100 mb-4 p-5" style="transition: transform 0.3s ease;">
-            <div class="icon-circle" style="background: #17a2b8; color: white;">
-                <i class="bi bi-building"></i>
+    <!-- HR Portal Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="glass-section welcome-portal-card text-center h-100 p-5 d-flex flex-column justify-content-between position-relative">
+            <div>
+                <div class="icon-circle mb-4" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);">
+                    <i class="bi bi-building"></i>
+                </div>
+                <h3 class="fw-bold mb-3" style="color: var(--rv-navy); letter-spacing: 0.5px;">COMPANY / HR</h3>
+                <p class="text-muted mb-4 small" style="line-height: 1.6;">Corporate recruitment portal to verify eligible students, schedule interview rounds, and manage selections.</p>
             </div>
-            <h3 class="fw-bold mb-4" style="color: var(--rv-navy);">COMPANY / HR</h3>
-            <p class="text-muted mb-4">HR users can login to manage eligible students, schedule interviews and update application status.</p>
-            <a href="{% url 'hr_login' %}" class="btn btn-lg w-100 fw-bold" style="background-color: #17a2b8; color: white; border-radius: 4px;">
+            <a href="{% url 'hr_login' %}" class="btn btn-lg w-100 fw-bold py-3 shadow-sm rounded-pill text-white" style="background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%); border: 1px solid rgba(255,255,255,0.25);">
                 HR LOGIN <i class="bi bi-person-badge ms-2"></i>
             </a>
         </div>
     </div>
 </div>
-
-<style>
-    .glass-section:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    }
-</style>
 {% endblock %}

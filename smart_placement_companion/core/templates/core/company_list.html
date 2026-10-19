@@ -6,8 +6,8 @@
 <div class="container mb-5 mt-4">
     <div class="d-flex justify-content-between align-items-end mb-5" data-aos="fade-down">
         <div>
-            <h2 class="fw-black text-navy mb-1" style="font-weight: 900;">Company Explorer</h2>
-            <p class="text-muted">Discover premium placement opportunities and verify your eligibility in real-time.</p>
+            <h2 class="fw-black text-navy mb-1" style="font-weight: 900;">{% if request.session.role == 'hr' %}Company Profile{% else %}Company Explorer{% endif %}</h2>
+            <p class="text-muted">{% if request.session.role == 'hr' %}Review and manage your company’s placement profile.{% else %}Discover premium placement opportunities and verify your eligibility in real-time.{% endif %}</p>
         </div>
         {% if request.session.role == 'admin' %}
             <a href="{% url 'add_company' %}" class="btn btn-navy px-4 py-2 fw-bold rounded-3 shadow-sm">
@@ -79,6 +79,10 @@
                         </a>
                         <a href="{% url 'edit_company' company.id %}" class="btn btn-outline-danger py-2 fw-bold rounded-3">
                             <i class="bi bi-pencil-square me-2"></i> EDIT COMPANY
+                        </a>
+                    {% elif request.session.role == 'hr' %}
+                        <a href="{% url 'edit_company' company.id %}" class="btn btn-outline-primary fw-bold py-2 rounded-3">
+                            <i class="bi bi-pencil-square me-2"></i> EDIT COMPANY PROFILE
                         </a>
                     {% endif %}
                 </div>
