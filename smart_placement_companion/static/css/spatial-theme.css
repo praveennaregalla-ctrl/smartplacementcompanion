@@ -351,6 +351,16 @@ body::after {
     transition: var(--spatial-spring) !important;
 }
 
+.glass-section.stat-card-navy {
+    background: var(--rv-navy) !important;
+    color: #fff !important;
+}
+
+.glass-section.stat-card-gold {
+    background: var(--rv-gold) !important;
+    color: var(--rv-navy) !important;
+}
+
 .glass-section::before {
     display: none !important;
 }
