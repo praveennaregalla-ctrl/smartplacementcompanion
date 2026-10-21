@@ -307,9 +307,11 @@ body::after {
 @keyframes spatialPopup {
     from {
         opacity: 0;
+        transform: translateY(-8px) scale(0.96);
     }
     to {
         opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -884,32 +886,19 @@ textarea:focus-visible,
     }
 
     .top-bar {
-        padding: 6px 10px !important;
+        padding: 10px 12px !important;
     }
 
     .college-logo-img {
-        height: 42px;
-    }
-
-    .college-title h1 {
-        font-size: 0.85rem !important;
-        letter-spacing: 0.8px !important;
+        height: 54px;
     }
 
     .college-title h2 {
-        font-size: clamp(0.88rem, 3.6vw, 1.1rem) !important;
-        line-height: 1.1 !important;
+        font-size: clamp(1rem, 4vw, 1.35rem) !important;
     }
 
     .college-title p {
-        font-size: 0.66rem !important;
-        line-height: 1.2 !important;
-    }
-
-    .portal-brand {
-        margin-top: 4px !important;
-        padding: 2px 9px !important;
-        font-size: 0.64rem !important;
+        font-size: 0.72rem !important;
     }
 
     .main-content {
@@ -933,24 +922,6 @@ textarea:focus-visible,
 @media (max-width: 991.98px) {
     .student-navbar-container {
         flex-wrap: wrap;
-        position: relative;
-        min-height: 42px;
-    }
-
-    .student-navbar-container > .dropdown {
-        position: absolute;
-        top: 0;
-        right: 12px;
-    }
-
-    .student-action-menu {
-        min-width: min(220px, calc(100vw - 48px)) !important;
-        max-width: calc(100vw - 48px);
-    }
-
-    .student-action-menu .dropdown-item {
-        white-space: normal !important;
-        overflow-wrap: anywhere;
     }
 
     .student-navbar-container .navbar-collapse {

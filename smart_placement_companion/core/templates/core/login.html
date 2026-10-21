@@ -1,48 +1,83 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
-{% block title %}Login - Placement Portal{% endblock %}
+{% block title %}Admin Sign In - Smart Placement Companion{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/auth.css' %}">{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center" style="min-height: calc(100vh - 300px); align-items: center;">
-    <div class="col-md-5">
-        <div class="card-simple glass-section">
-            <div class="text-center mb-4">
-                <i class="bi bi-mortarboard-fill" style="font-size: 3rem; color: #003366;"></i>
-                <h3 style="color: #003366; font-weight: 600; margin-top: 1rem;">Login to Portal</h3>
-                <p class="text-muted">Enter your credentials to access the placement system</p>
-            </div>
-            
-            <form method="POST">
-                {% csrf_token %}
-                
-                {% if form.errors %}
-                <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-circle-fill"></i> Invalid username or password. Please try again.
-                </div>
-                {% endif %}
-                
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control" id="username" required autofocus>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" id="password" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary-custom w-100 mb-3">
-                    <i class="bi bi-box-arrow-in-right"></i> Login
-                </button>
-                
-                <div class="text-center">
-                    <a href="{% url 'home' %}" class="text-decoration-none">
-                        <i class="bi bi-arrow-left"></i> Back to Home
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<div class="auth-shell">
+    <div class="auth-orb auth-orb-gold"></div>
+    <div class="auth-orb auth-orb-navy"></div>
 
+    <section class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-card-header">
+            <div class="portal-badge admin">
+                <span class="portal-badge-dot"></span>
+                <span>ADMINISTRATION ACCESS</span>
+            </div>
+            <div class="auth-icon-circle admin">
+                <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <h1 id="auth-title" class="auth-title">Administrator Sign In</h1>
+            <p class="auth-subtitle">Command center for drives, student records &amp; placement analytics.</p>
+        </div>
+
+        <form method="POST" class="auth-form" data-auth-form>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% if form.errors %}
+            <div class="auth-error" role="alert">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>Invalid username or password. Please try again.</span>
+            </div>
+            {% endif %}
+
+            <div class="auth-field">
+                <label for="username">Username</label>
+                <div class="auth-input-wrap">
+                    <i class="bi bi-person auth-input-icon" aria-hidden="true"></i>
+                    <input type="text" name="username" id="username" placeholder="Enter administrative username" autocomplete="username" required autofocus>
+                </div>
+            </div>
+
+            <div class="auth-field">
+                <label for="password">Password</label>
+                <div class="auth-input-wrap">
+                    <i class="bi bi-lock auth-input-icon" aria-hidden="true"></i>
+                    <input type="password" name="password" id="password" placeholder="Enter password" autocomplete="current-password" required>
+                    <button class="auth-password-toggle" type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-options">
+                <label class="auth-check">
+                    <input type="checkbox" name="remember_me" value="1">
+                    <span>Remember me</span>
+                </label>
+                <a href="mailto:info@tcegadag.edu?subject=Administrator%20password%20reset" class="auth-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="auth-submit btn-gold">
+                <span>ADMIN SIGN IN</span>
+                <i class="bi bi-shield-lock" aria-hidden="true"></i>
+            </button>
+        </form>
+
+        <div class="auth-divider"><span>or switch portal</span></div>
+        <nav class="auth-portals" aria-label="Other sign-in portals">
+            <a href="{% url 'student_login' %}"><i class="bi bi-mortarboard-fill"></i> Student Portal</a>
+            <a href="{% url 'hr_login' %}"><i class="bi bi-building"></i> Company / HR</a>
+        </nav>
+        
+        <p class="auth-footer">Need account access? <a href="mailto:info@tcegadag.edu?subject=Placement%20portal%20account%20access">Contact placement office</a></p>
+        <a href="{% url 'welcome' %}" class="auth-back"><i class="bi bi-arrow-left"></i> Back to portal selection</a>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auth.js' %}" defer></script>
 {% endblock %}

@@ -320,10 +320,12 @@ def student_detail(request, id):
 
 # -------------------- COMPANIES --------------------
 
-@role_required(['admin', 'student'])
+@role_required(['admin', 'student', 'hr'])
 def company_list(request):
-    """List all companies with pagination."""
+    """List recruiting companies, scoped to the signed-in company for HR users."""
     companies = Company.objects.all()
+    if request.session.get('role') == 'hr':
+        companies = companies.filter(pk=request.session.get('company_id'))
     
     # Pagination
     paginator = Paginator(companies, 12)  # 12 companies per page
@@ -368,26 +370,39 @@ def add_company(request):
     return render(request, 'core/add_company.html', {'form': form})
 
 
-@role_required(['admin'])
+@role_required(['admin', 'hr'])
 def edit_company(request, id):
-    """Edit an existing company."""
-    company = get_object_or_404(Company, id=id)
+    """Edit a company; HR accounts may only edit their own company profile."""
+    company_queryset = Company.objects.all()
+    is_hr = request.session.get('role') == 'hr'
+    if is_hr:
+        company_queryset = company_queryset.filter(pk=request.session.get('company_id'))
+    company = get_object_or_404(company_queryset, id=id)
 
     if request.method == 'POST':
         form = CompanyForm(request.POST, instance=company)
+        if is_hr:
+            form.fields.pop('hr_email', None)
+            form.fields.pop('hr_password', None)
         if form.is_valid():
             form.save()
             messages.success(request, f"Company '{company.name}' updated successfully!")
             return redirect('company_list')
     else:
         form = CompanyForm(instance=company)
+        if is_hr:
+            form.fields.pop('hr_email', None)
+            form.fields.pop('hr_password', None)
 
-    return render(request, 'core/edit_company.html', {'form': form, 'company': company})
+    return render(request, 'core/edit_company.html', {'form': form, 'company': company, 'is_hr': is_hr})
 
 
-@role_required(['admin', 'student'])
+@role_required(['admin', 'student', 'hr'])
 def company_detail(request, id):
-    company = get_object_or_404(Company, id=id)
+    company_queryset = Company.objects.all()
+    if request.session.get('role') == 'hr':
+        company_queryset = company_queryset.filter(pk=request.session.get('company_id'))
+    company = get_object_or_404(company_queryset, id=id)
 
     eligible_students = Student.objects.filter(
         cgpa__gte=company.min_cgpa,
@@ -718,13 +733,15 @@ def update_placement(request, id):
 
 # -------------------- PLACEMENT DASHBOARD --------------------
 
-@role_required(['admin', 'student'])
+@role_required(['admin', 'student', 'hr'])
 def placement_dashboard(request):
     """Placement dashboard with optimized queries."""
     status = request.GET.get('status')
     
     # Base queryset with select_related for optimization
     base_queryset = Placement.objects.select_related('student', 'company')
+    if request.session.get('role') == 'hr':
+        base_queryset = base_queryset.filter(company_id=request.session.get('company_id'))
     
     if status:
         placements = base_queryset.filter(status=status)
@@ -732,10 +749,11 @@ def placement_dashboard(request):
         placements = base_queryset.all()
     
     # Single query aggregation for stats
-    stats = Placement.objects.aggregate(
+    stats = base_queryset.aggregate(
         selected_count=Count(Case(When(status='SELECTED', then=1), output_field=IntegerField())),
         rejected_count=Count(Case(When(status='REJECTED', then=1), output_field=IntegerField())),
         pending_count=Count(Case(When(status='PENDING', then=1), output_field=IntegerField())),
+        applicant_count=Count('id'),
     )
     
     # Pagination
@@ -748,6 +766,7 @@ def placement_dashboard(request):
         'page_obj': page_obj,
         **stats,
         'current_status': status,
+        'is_hr': request.session.get('role') == 'hr',
     }
 
     return render(request, 'core/dashboard_placements.html', context)
@@ -971,8 +990,8 @@ def home(request):
 
     total_students = Student.objects.count()
     total_companies = Company.objects.count()
-    total_placements = Placement.objects.count()
     selected_placements = Placement.objects.filter(status='SELECTED').count()
+    total_placements = selected_placements
     
     # Calculate placement percentage
     if total_students > 0:
@@ -1013,11 +1032,17 @@ def home(request):
         if student_id:
             context['student'] = student
             
-            # Application stats
-            context['applied_count'] = Placement.objects.filter(student_id=student_id, status='APPLIED').count()
-            context['shortlisted_count'] = Placement.objects.filter(student_id=student_id, status='SHORTLISTED').count()
-            context['selected_count'] = Placement.objects.filter(student_id=student_id, status='SELECTED').count()
-            context['my_applications_count'] = Placement.objects.filter(student_id=student_id).count()
+            # Fetch application totals with one grouped database query.
+            application_stats = Placement.objects.filter(student_id=student_id).aggregate(
+                applied=Count('id', filter=Q(status='APPLIED')),
+                shortlisted=Count('id', filter=Q(status='SHORTLISTED')),
+                selected=Count('id', filter=Q(status='SELECTED')),
+                total=Count('id'),
+            )
+            context['applied_count'] = application_stats['applied']
+            context['shortlisted_count'] = application_stats['shortlisted']
+            context['selected_count'] = application_stats['selected']
+            context['my_applications_count'] = application_stats['total']
             
             # Upcoming interviews
             from django.utils import timezone
@@ -1055,7 +1080,9 @@ def home(request):
                 recommendations.append("Your profile looks strong! Keep practicing mock interviews.")
             
             context['ai_recommendations'] = recommendations
-            context['my_recent_applications'] = Placement.objects.filter(student_id=student_id).select_related('company').order_by('-created_at')[:3]
+            context['my_recent_applications'] = Placement.objects.filter(
+                student_id=student_id,
+            ).select_related('company').order_by('-updated_at', '-created_at')[:5]
     
     return render(request, 'core/home.html', context)
 
@@ -1079,6 +1106,7 @@ def admin_login(request):
 
         if user is not None:
             login(request, user)
+            request.session.set_expiry(None if request.POST.get('remember_me') else 0)
             logger.info(f"User logged in: {username}")
             
             # Redirect to 'next' URL if provided and safe
@@ -1116,6 +1144,7 @@ def student_login(request):
         student = Student.objects.filter(usn__iexact=usn).first()
         if student and student.check_password(password):
             # Login successful
+            request.session.set_expiry(None if request.POST.get('remember_me') else 0)
             request.session['student_id'] = student.id
             request.session['role'] = 'student'
             if student.check_password(student.usn or ''):
@@ -1243,6 +1272,7 @@ def hr_login(request):
 
         company = Company.objects.filter(hr_email=email).first()
         if company and company.check_hr_password(password):
+            request.session.set_expiry(None if request.POST.get('remember_me') else 0)
             request.session['role'] = 'hr'
             request.session['company_id'] = company.id
             messages.success(request, f"Welcome {company.hr_contact_name or company.name} HR!")
