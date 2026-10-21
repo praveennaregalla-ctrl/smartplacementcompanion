@@ -939,6 +939,53 @@ textarea:focus-visible,
     }
 }
 
+@media (max-width: 575.98px) {
+    .top-bar {
+        padding: 8px 10px !important;
+    }
+
+    .top-bar .row {
+        align-items: center;
+    }
+
+    .top-bar .col-md-auto {
+        flex: 0 0 48px;
+        width: 48px;
+        text-align: left !important;
+    }
+
+    .top-bar .col {
+        flex: 1 1 0;
+        text-align: left !important;
+    }
+
+    .college-logo-img {
+        height: 42px;
+    }
+
+    .college-title {
+        min-width: 0;
+    }
+
+    .college-title h1 {
+        font-size: 0.72rem !important;
+        line-height: 1.1;
+    }
+
+    .college-title h2 {
+        font-size: clamp(0.68rem, 3.2vw, 0.82rem) !important;
+        line-height: 1.1;
+        white-space: nowrap;
+    }
+
+    .college-title p {
+        display: block;
+        font-size: 0.58rem !important;
+        line-height: 1.2;
+        margin-top: 3px !important;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
